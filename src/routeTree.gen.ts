@@ -9,8 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as HowRemoteFirstSetupsWorkRouteImport } from './routes/how-remote-first-setups-work'
 import { Route as IndexRouteImport } from './routes/index'
 
+const HowRemoteFirstSetupsWorkRoute =
+  HowRemoteFirstSetupsWorkRouteImport.update({
+    id: '/how-remote-first-setups-work',
+    path: '/how-remote-first-setups-work',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +26,39 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/how-remote-first-setups-work': typeof HowRemoteFirstSetupsWorkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/how-remote-first-setups-work': typeof HowRemoteFirstSetupsWorkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/how-remote-first-setups-work': typeof HowRemoteFirstSetupsWorkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/how-remote-first-setups-work'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/how-remote-first-setups-work'
+  id: '__root__' | '/' | '/how-remote-first-setups-work'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HowRemoteFirstSetupsWorkRoute: typeof HowRemoteFirstSetupsWorkRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/how-remote-first-setups-work': {
+      id: '/how-remote-first-setups-work'
+      path: '/how-remote-first-setups-work'
+      fullPath: '/how-remote-first-setups-work'
+      preLoaderRoute: typeof HowRemoteFirstSetupsWorkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +71,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HowRemoteFirstSetupsWorkRoute: HowRemoteFirstSetupsWorkRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
