@@ -19,7 +19,6 @@ export const Route = createFileRoute("/kiosk/$slug")({
 
 type KioskDetail = Tables<"kiosks"> & {
   categories: { name: string; slug: string; icon_name: string | null } | null;
-  profiles: { display_name: string | null; avatar_url: string | null } | null;
   kiosk_stats: { views_count: number } | null;
 };
 
