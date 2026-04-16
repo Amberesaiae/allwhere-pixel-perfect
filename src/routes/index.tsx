@@ -7,6 +7,7 @@ import PromoBanner from "@/components/landing/PromoBanner";
 import FeaturedListings from "@/components/landing/FeaturedListings";
 import CategoryTiles from "@/components/landing/CategoryTiles";
 import VendorSpotlight from "@/components/landing/VendorSpotlight";
+import VerifiedKiosksNearYou from "@/components/landing/VerifiedKiosksNearYou";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,6 +34,7 @@ function LandingPage() {
       <FeaturedListings />
       <CategoryTiles />
       <VendorSpotlight />
+      <VerifiedKiosksNearYou />
       <Footer />
     </main>
   );

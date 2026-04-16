@@ -14,8 +14,31 @@ type Listing = {
   created_at?: string;
   description?: string | null;
   listing_images?: { image_url: string }[] | null;
-  kiosks?: { name?: string | null; phone?: string | null; is_verified?: boolean | null } | null;
+  kiosks?: { name?: string | null; slug?: string | null; phone?: string | null; is_verified?: boolean | null } | null;
 };
+
+function KioskAttribution({ kiosk, className }: { kiosk: Listing["kiosks"]; className?: string }) {
+  if (!kiosk?.name) return null;
+  const inner = (
+    <span className={`inline-flex items-center gap-1 ${className ?? ""}`}>
+      <span className="truncate">{kiosk.name}</span>
+      {kiosk.is_verified && <ShieldCheck className="w-3 h-3 text-bk-red shrink-0" />}
+    </span>
+  );
+  if (kiosk.slug) {
+    return (
+      <Link
+        to="/kiosk/$slug"
+        params={{ slug: kiosk.slug }}
+        onClick={(e) => e.stopPropagation()}
+        className="hover:text-bk-orange transition"
+      >
+        {inner}
+      </Link>
+    );
+  }
+  return inner;
+}
 
 interface Props {
   listing: Listing;
@@ -64,7 +87,9 @@ export default function ListingCard({ listing, variant = "grid", isFavorited, on
         </div>
         <div className="flex-1 min-w-0 flex flex-col">
           {listing.kiosks?.name && (
-            <p className="text-[10px] uppercase tracking-wider text-bk-muted font-semibold truncate">{listing.kiosks.name}</p>
+            <p className="text-[10px] uppercase tracking-wider text-bk-muted font-semibold truncate">
+              <KioskAttribution kiosk={listing.kiosks} />
+            </p>
           )}
           <h3 className="text-[15px] font-semibold text-bk-dark line-clamp-2 mt-0.5">{listing.title}</h3>
           {listing.description && (
@@ -130,7 +155,9 @@ export default function ListingCard({ listing, variant = "grid", isFavorited, on
       </div>
       <div className="p-3">
         {listing.kiosks?.name && (
-          <p className="text-[10px] uppercase tracking-wider text-bk-muted font-semibold truncate mb-1">{listing.kiosks.name}</p>
+          <p className="text-[10px] uppercase tracking-wider text-bk-muted font-semibold truncate mb-1">
+            <KioskAttribution kiosk={listing.kiosks} />
+          </p>
         )}
         <h3 className="text-[14px] font-semibold text-bk-dark line-clamp-2 leading-snug min-h-[2.6em]">{listing.title}</h3>
         <p className="text-[16px] font-bold text-bk-orange mt-2">{formatPrice(Number(listing.price), listing.currency || "GHS")}</p>

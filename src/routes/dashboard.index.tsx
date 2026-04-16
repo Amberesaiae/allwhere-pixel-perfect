@@ -164,7 +164,10 @@ function DashboardPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <Link to="/kiosk/$slug" params={{ slug: kiosk.slug }} className="p-2.5 rounded-xl border border-bk-beige text-bk-muted hover:text-bk-dark hover:bg-bk-beige transition" title="View"><Eye className="w-4 h-4" /></Link>
+                      <Link to="/kiosk/$slug" params={{ slug: kiosk.slug }} className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-bk-beige text-[12px] font-semibold text-bk-dark hover:bg-bk-page transition" title="View public page">
+                        <Eye className="w-3.5 h-3.5" /> View Public Page
+                      </Link>
+                      <Link to="/kiosk/$slug" params={{ slug: kiosk.slug }} className="sm:hidden p-2.5 rounded-xl border border-bk-beige text-bk-muted hover:text-bk-dark hover:bg-bk-beige transition" title="View"><Eye className="w-4 h-4" /></Link>
                       <Link to="/dashboard/edit-kiosk/$id" params={{ id: kiosk.id }} className="p-2.5 rounded-xl border border-bk-beige text-bk-muted hover:text-bk-dark hover:bg-bk-beige transition" title="Edit"><Pencil className="w-4 h-4" /></Link>
                       <button onClick={() => handleDeleteKiosk(kiosk.id)} disabled={deleting === kiosk.id} className="p-2.5 rounded-xl border border-bk-beige text-bk-muted hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition disabled:opacity-50" title="Delete">
                         {deleting === kiosk.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}

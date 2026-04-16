@@ -6,9 +6,10 @@ import Footer from "@/components/Footer";
 import ListingCard from "@/components/ListingCard";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Search, MapPin, Eye, ShieldCheck, Store, LayoutGrid, List as ListIcon, SlidersHorizontal, X } from "lucide-react";
-import { GHANA_REGIONS, getCategoryIcon, CONDITION_LABELS } from "@/lib/constants";
+import { Loader2, Search, LayoutGrid, List as ListIcon, SlidersHorizontal, X, Store } from "lucide-react";
+import { GHANA_REGIONS, CONDITION_LABELS } from "@/lib/constants";
 import type { Tables } from "@/integrations/supabase/types";
+import KioskCard from "@/components/KioskCard";
 
 const discoverSearchSchema = z.object({
   category: fallback(z.string(), "").default(""),
@@ -120,7 +121,7 @@ function DiscoverPage() {
     setLoading(true);
     let q = supabase
       .from("kiosks")
-      .select("*, categories(name, slug, icon_name), kiosk_stats(views_count)")
+      .select("*, categories(name, slug, icon_name), kiosk_stats(views_count), listings(count)")
       .eq("status", "active")
       .order("is_verified", { ascending: false })
       .order("created_at", { ascending: false });
@@ -333,34 +334,9 @@ function DiscoverPage() {
                 )
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {pageItems.map((kiosk: Kiosk) => {
-                    const Icon = kiosk.categories?.icon_name ? getCategoryIcon(kiosk.categories.icon_name) : Store;
-                    return (
-                      <Link key={kiosk.id} to="/kiosk/$slug" params={{ slug: kiosk.slug }} className="bg-white rounded-2xl border border-bk-beige overflow-hidden hover:shadow-md transition group block">
-                        <div className="aspect-[16/10] bg-bk-page overflow-hidden relative">
-                          {kiosk.cover_image_url ? (
-                            <img src={kiosk.cover_image_url} alt={kiosk.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-bk-muted">{Icon && <Icon className="w-12 h-12 opacity-30" />}</div>
-                          )}
-                          {kiosk.is_verified && (
-                            <span className="absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-bk-red text-white text-[10px] font-bold">
-                              <ShieldCheck className="w-3 h-3" /> Verified
-                            </span>
-                          )}
-                        </div>
-                        <div className="p-4">
-                          <h3 className="text-[15px] font-bold text-bk-dark truncate">{kiosk.name}</h3>
-                          {kiosk.categories && <p className="text-[11px] uppercase tracking-wider text-bk-muted font-semibold mt-0.5">{kiosk.categories.name}</p>}
-                          {kiosk.description && <p className="text-[13px] text-bk-muted line-clamp-2 mt-2">{kiosk.description}</p>}
-                          <div className="flex items-center justify-between text-[12px] text-bk-muted mt-3">
-                            {kiosk.region && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{kiosk.city || kiosk.region}</span>}
-                            <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{kiosk.kiosk_stats?.views_count || 0}</span>
-                          </div>
-                        </div>
-                      </Link>
-                    );
-                  })}
+                  {pageItems.map((kiosk: Kiosk) => (
+                    <KioskCard key={kiosk.id} kiosk={kiosk as any} />
+                  ))}
                 </div>
               )}
 
