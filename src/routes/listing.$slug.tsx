@@ -40,7 +40,7 @@ function ListingDetailPage() {
     setLoading(true);
     const { data, error } = await supabase
       .from("listings")
-      .select("*, categories(name, slug, icon_name), kiosks(name, slug, phone, is_verified, owner_id), listing_stats(views_count)")
+      .select("*, categories(name, slug, icon_name), kiosks(name, slug, phone, is_verified, cover_image_url, owner_id, region, city, created_at, categories(name)), listing_stats(views_count)")
       .eq("slug", slug)
       .single();
     if (error || !data) {
@@ -280,23 +280,40 @@ function ListingDetailPage() {
                   </div>
                 </div>
 
-                {/* Seller card */}
+                {/* Vendor card */}
                 <div className="border-t border-bk-beige mt-6 pt-5">
                   <p className="text-[11px] uppercase tracking-wider text-bk-muted font-bold mb-3">Sold by</p>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-bk-yellow flex items-center justify-center text-[16px] font-bold text-bk-dark shrink-0">
-                      {listing.kiosks?.name?.charAt(0)?.toUpperCase()}
+                  <Link
+                    to="/kiosk/$slug"
+                    params={{ slug: listing.kiosks?.slug || "" }}
+                    className="flex items-center gap-3 mb-4 group"
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-bk-page overflow-hidden shrink-0 border border-bk-beige">
+                      {listing.kiosks?.cover_image_url ? (
+                        <img src={listing.kiosks.cover_image_url} alt={listing.kiosks?.name || ""} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-bk-yellow flex items-center justify-center text-[16px] font-bold text-bk-dark">
+                          {listing.kiosks?.name?.charAt(0)?.toUpperCase()}
+                        </div>
+                      )}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[14px] font-bold text-bk-dark truncate">{listing.kiosks?.name}</span>
+                        <span className="text-[14px] font-bold text-bk-dark truncate group-hover:text-bk-orange transition">{listing.kiosks?.name}</span>
                         {listing.kiosks?.is_verified && <ShieldCheck className="w-4 h-4 text-bk-red shrink-0" />}
                       </div>
-                      <p className="text-[11px] text-bk-muted">Member on BlueKiosk</p>
+                      {listing.kiosks?.categories?.name && (
+                        <p className="text-[11px] uppercase tracking-wider text-bk-muted font-semibold">{listing.kiosks.categories.name}</p>
+                      )}
+                      {(listing.kiosks?.city || listing.kiosks?.region) && (
+                        <p className="text-[11px] text-bk-muted flex items-center gap-1 mt-0.5">
+                          <MapPin className="w-3 h-3" />{listing.kiosks?.city || listing.kiosks?.region}
+                        </p>
+                      )}
                     </div>
-                  </div>
+                  </Link>
                   <div className="space-y-2">
-                    <Link to="/kiosk/$slug" params={{ slug: listing.kiosks?.slug || "" }} className="block text-center text-[12px] font-semibold text-bk-dark border border-bk-beige py-2.5 rounded-full hover:bg-bk-page transition">
+                    <Link to="/kiosk/$slug" params={{ slug: listing.kiosks?.slug || "" }} className="block text-center text-[12px] font-bold bg-bk-dark text-white py-2.5 rounded-full hover:bg-bk-dark/90 transition">
                       View Kiosk
                     </Link>
                     <Link to="/seller/$id" params={{ id: listing.kiosks?.owner_id || "" }} className="block text-center text-[12px] font-medium text-bk-muted hover:text-bk-dark transition">
@@ -308,10 +325,17 @@ function ListingDetailPage() {
             </aside>
           </div>
 
-          {/* Related */}
+          {/* More from this kiosk */}
           {related.length > 0 && (
             <div className="mt-12">
-              <h2 className="text-[20px] md:text-[24px] font-bold text-bk-dark mb-5">Related Products</h2>
+              <div className="flex items-end justify-between mb-5">
+                <h2 className="text-[20px] md:text-[24px] font-bold text-bk-dark">More from {listing.kiosks?.name}</h2>
+                {listing.kiosks?.slug && (
+                  <Link to="/kiosk/$slug" params={{ slug: listing.kiosks.slug }} className="text-[13px] font-semibold text-bk-dark hover:text-bk-orange transition">
+                    Visit kiosk →
+                  </Link>
+                )}
+              </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
                 {related.map((rl) => <ListingCard key={rl.id} listing={rl} />)}
               </div>
