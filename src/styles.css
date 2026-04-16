@@ -4,20 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
- */
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -59,29 +45,41 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-aw-cream: var(--aw-cream);
+  --color-aw-cream-dark: var(--aw-cream-dark);
+  --color-aw-beige: var(--aw-beige);
+  --color-aw-beige-dark: var(--aw-beige-dark);
+  --color-aw-yellow: var(--aw-yellow);
+  --color-aw-yellow-hover: var(--aw-yellow-hover);
+  --color-aw-teal: var(--aw-teal);
+  --color-aw-dark: var(--aw-dark);
+  --color-aw-muted: var(--aw-muted);
+  --color-aw-footer: var(--aw-footer);
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
 }
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --background: oklch(0.986 0.005 85);
+  --foreground: oklch(0.145 0.012 60);
+  --card: oklch(0.986 0.005 85);
+  --card-foreground: oklch(0.145 0.012 60);
+  --popover: oklch(0.986 0.005 85);
+  --popover-foreground: oklch(0.145 0.012 60);
+  --primary: oklch(0.145 0.012 60);
+  --primary-foreground: oklch(0.986 0.005 85);
+  --secondary: oklch(0.96 0.015 80);
+  --secondary-foreground: oklch(0.145 0.012 60);
+  --muted: oklch(0.96 0.015 80);
+  --muted-foreground: oklch(0.50 0.01 60);
+  --accent: oklch(0.96 0.015 80);
+  --accent-foreground: oklch(0.145 0.012 60);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: oklch(0.90 0.02 80);
+  --input: oklch(0.90 0.02 80);
+  --ring: oklch(0.50 0.01 60);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -95,6 +93,21 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+
+  /* Allwhere custom tokens */
+  --aw-cream: oklch(0.986 0.005 85);
+  --aw-cream-dark: oklch(0.975 0.008 85);
+  --aw-beige: oklch(0.955 0.015 80);
+  --aw-beige-dark: oklch(0.93 0.02 75);
+  --aw-yellow: oklch(0.85 0.15 85);
+  --aw-yellow-hover: oklch(0.82 0.15 85);
+  --aw-teal: oklch(0.94 0.03 175);
+  --aw-dark: oklch(0.145 0.012 60);
+  --aw-muted: oklch(0.50 0.01 60);
+  --aw-footer: oklch(0.955 0.015 80);
+
+  --font-heading: "Inter", system-ui, -apple-system, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
 }
 
 .dark {
@@ -140,5 +153,10 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
   }
 }
