@@ -41,6 +41,35 @@ export type Database = {
         }
         Relationships: []
       }
+      favorites: {
+        Row: {
+          created_at: string
+          id: string
+          listing_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          listing_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          listing_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kiosk_stats: {
         Row: {
           id: string
@@ -126,6 +155,148 @@ export type Database = {
           },
         ]
       }
+      listing_images: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          listing_id: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          listing_id: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          listing_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_images_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      listing_stats: {
+        Row: {
+          id: string
+          listing_id: string
+          views_count: number
+        }
+        Insert: {
+          id?: string
+          listing_id: string
+          views_count?: number
+        }
+        Update: {
+          id?: string
+          listing_id?: string
+          views_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_stats_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: true
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      listings: {
+        Row: {
+          category_id: string | null
+          city: string | null
+          condition: Database["public"]["Enums"]["listing_condition"]
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          is_negotiable: boolean
+          kiosk_id: string
+          listing_type: string
+          owner_id: string
+          price: number
+          price_max: number | null
+          pricing_type: string
+          region: string | null
+          slug: string
+          status: string
+          stock_quantity: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          city?: string | null
+          condition?: Database["public"]["Enums"]["listing_condition"]
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_negotiable?: boolean
+          kiosk_id: string
+          listing_type?: string
+          owner_id: string
+          price?: number
+          price_max?: number | null
+          pricing_type?: string
+          region?: string | null
+          slug: string
+          status?: string
+          stock_quantity?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          city?: string | null
+          condition?: Database["public"]["Enums"]["listing_condition"]
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_negotiable?: boolean
+          kiosk_id?: string
+          listing_type?: string
+          owner_id?: string
+          price?: number
+          price_max?: number | null
+          pricing_type?: string
+          region?: string | null
+          slug?: string
+          status?: string
+          stock_quantity?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listings_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listings_kiosk_id_fkey"
+            columns: ["kiosk_id"]
+            isOneToOne: false
+            referencedRelation: "kiosks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -193,10 +364,15 @@ export type Database = {
         Returns: boolean
       }
       increment_kiosk_views: { Args: { _kiosk_id: string }; Returns: undefined }
+      increment_listing_views: {
+        Args: { _listing_id: string }
+        Returns: undefined
+      }
       promote_to_vendor: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "customer" | "vendor" | "admin"
+      listing_condition: "new" | "used" | "refurbished"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -325,6 +501,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["customer", "vendor", "admin"],
+      listing_condition: ["new", "used", "refurbished"],
     },
   },
 } as const

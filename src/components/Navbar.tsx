@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { CartDrawer } from "@/components/CartDrawer";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
-import { User, Store, Menu, X } from "lucide-react";
+import { User, Store, Menu, X, Heart } from "lucide-react";
 import { useState } from "react";
 
 export default function Navbar() {
@@ -53,6 +53,15 @@ export default function Navbar() {
 
         {/* Desktop right */}
         <div className="flex items-center gap-3">
+          {!isLoading && isAuthenticated && (
+            <Link
+              to="/favorites"
+              className="p-2 text-bk-muted hover:text-bk-dark transition"
+              title="Saved listings"
+            >
+              <Heart className="w-5 h-5" />
+            </Link>
+          )}
           <CartDrawer />
           {!isLoading && (
             isAuthenticated ? (
@@ -119,6 +128,17 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+
+            {!isLoading && isAuthenticated && (
+              <Link
+                to="/favorites"
+                onClick={closeMobile}
+                className="block py-3 text-[15px] font-medium text-bk-muted hover:text-bk-dark transition border-b border-bk-beige/50"
+                activeProps={{ className: "text-bk-dark font-semibold" }}
+              >
+                Saved
+              </Link>
+            )}
 
             {!isLoading && !rolesLoading && isAuthenticated && isVendor && (
               <Link
