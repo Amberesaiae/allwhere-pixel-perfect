@@ -9,15 +9,22 @@ export default function FeaturedListings() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase
-      .from("listings")
-      .select("id, title, slug, price, currency, condition, is_negotiable, region, city, created_at, listing_images(image_url), kiosks(name, is_verified)")
-      .eq("status", "active")
-      .order("created_at", { ascending: false })
-      .limit(8)
-      .then(({ data }) => setListings(data || []))
-      .catch(() => setListings([]))
-      .finally(() => setLoading(false));
+    const fetchListings = async () => {
+      try {
+        const { data } = await supabase
+          .from("listings")
+          .select("id, title, slug, price, currency, condition, is_negotiable, region, city, created_at, listing_images(image_url), kiosks(name, is_verified)")
+          .eq("status", "active")
+          .order("created_at", { ascending: false })
+          .limit(8);
+        setListings(data || []);
+      } catch {
+        setListings([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchListings();
   }, []);
 
   return (
