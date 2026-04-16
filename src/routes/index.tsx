@@ -1,26 +1,46 @@
 import { createFileRoute } from "@tanstack/react-router";
+import Navbar from "@/components/Navbar";
+import HeroSection from "@/components/HeroSection";
+import DeploySection from "@/components/DeploySection";
+import LifecycleSection from "@/components/LifecycleSection";
+import RedeploySection from "@/components/RedeploySection";
+import ConnectSection from "@/components/ConnectSection";
+import FleetSection from "@/components/FleetSection";
+import CTASection from "@/components/CTASection";
+import Footer from "@/components/Footer";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "How Remote-First Setups Work | allwhere" },
+      {
+        name: "description",
+        content:
+          "Put the employee device lifecycle on autopilot. From deploy to retrieval, allwhere manages every stage of your employee equipment lifecycle.",
+      },
+      { property: "og:title", content: "How Remote-First Setups Work | allwhere" },
+      {
+        property: "og:description",
+        content:
+          "Put the employee device lifecycle on autopilot. From deploy to retrieval, allwhere manages every stage.",
+      },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
+function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-aw-cream">
+      <Navbar />
+      <HeroSection />
+      <DeploySection />
+      <LifecycleSection />
+      <RedeploySection />
+      <ConnectSection />
+      <FleetSection />
+      <CTASection />
+      <Footer />
     </div>
   );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
 }
