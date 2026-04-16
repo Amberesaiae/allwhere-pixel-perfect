@@ -1,6 +1,12 @@
 import { Link } from "@tanstack/react-router";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserRoles } from "@/hooks/useUserRoles";
 
 export default function HeroSection() {
+  const { isAuthenticated, user, isLoading } = useAuth();
+  const { isVendor, loading: rolesLoading } = useUserRoles(user?.id);
+  const ready = !isLoading && !rolesLoading;
+
   return (
     <section className="bg-bk-cream pt-12 pb-16 md:pt-20 md:pb-24">
       <div className="mx-auto max-w-[1280px] px-6 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
@@ -18,12 +24,30 @@ export default function HeroSection() {
             >
               BROWSE KIOSKS
             </Link>
-            <Link
-              to="/register"
-              className="inline-block text-[15px] font-semibold text-bk-dark px-8 py-4 rounded-full border-2 border-bk-dark hover:bg-bk-beige transition"
-            >
-              SIGN UP FREE
-            </Link>
+            {ready && isAuthenticated ? (
+              isVendor ? (
+                <Link
+                  to="/dashboard"
+                  className="inline-block text-[15px] font-semibold text-bk-dark px-8 py-4 rounded-full border-2 border-bk-dark hover:bg-bk-beige transition"
+                >
+                  GO TO DASHBOARD
+                </Link>
+              ) : (
+                <Link
+                  to="/become-vendor"
+                  className="inline-block text-[15px] font-semibold text-bk-dark px-8 py-4 rounded-full border-2 border-bk-dark hover:bg-bk-beige transition"
+                >
+                  START SELLING
+                </Link>
+              )
+            ) : (
+              <Link
+                to="/register"
+                className="inline-block text-[15px] font-semibold text-bk-dark px-8 py-4 rounded-full border-2 border-bk-dark hover:bg-bk-beige transition"
+              >
+                SIGN UP FREE
+              </Link>
+            )}
           </div>
         </div>
         <div className="flex-1 max-w-[620px]">

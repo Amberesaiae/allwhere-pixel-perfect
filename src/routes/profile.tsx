@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { Loader2, User, MapPin, Phone, LogOut } from "lucide-react";
+import { GHANA_REGIONS } from "@/lib/constants";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
@@ -150,13 +151,16 @@ function ProfilePage() {
                   <MapPin className="w-4 h-4 inline mr-1" />
                   Region
                 </label>
-                <input
-                  type="text"
+                <select
                   value={region}
                   onChange={(e) => setRegion(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-bk-beige bg-bk-cream text-bk-dark text-[15px] focus:outline-none focus:ring-2 focus:ring-bk-yellow"
-                  placeholder="e.g. Greater Accra"
-                />
+                >
+                  <option value="">Select region</option>
+                  {GHANA_REGIONS.map((r) => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block text-[14px] font-medium text-bk-dark mb-1.5">City</label>

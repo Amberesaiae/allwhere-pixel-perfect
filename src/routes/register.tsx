@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
 import { lovable } from "@/integrations/lovable/index";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/register")({
@@ -27,10 +27,11 @@ function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  if (isAuthenticated) {
-    navigate({ to: "/" });
-    return null;
-  }
+  useEffect(() => {
+    if (isAuthenticated) navigate({ to: "/" });
+  }, [isAuthenticated]);
+
+  if (isAuthenticated) return null;
 
   const handleGoogleSignIn = async () => {
     setError("");
