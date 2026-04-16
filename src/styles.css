@@ -108,7 +108,11 @@
   --bk-teal: oklch(0.94 0.03 175);
   --bk-dark: oklch(0.145 0.012 60);
   --bk-muted: oklch(0.50 0.01 60);
-  --bk-footer: oklch(0.955 0.015 80);
+  --bk-footer: oklch(0.18 0.012 60);
+  --bk-page: oklch(0.965 0.003 80);
+  --bk-orange: oklch(0.68 0.18 40);
+  --bk-orange-hover: oklch(0.62 0.18 40);
+  --bk-red: oklch(0.58 0.21 25);
 
   --font-heading: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
