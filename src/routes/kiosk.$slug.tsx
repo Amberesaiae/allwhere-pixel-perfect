@@ -192,6 +192,7 @@ function KioskDetailPage() {
                       </button>
                     ))}
                   </div>
+                  </div>
                 </div>
 
                 {filteredListings.length === 0 ? (
