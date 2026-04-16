@@ -2,8 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
-import { MapPin, CheckCircle, Eye, Phone, ArrowLeft, Loader2, MessageCircle, Tag } from "lucide-react";
+import { MapPin, CheckCircle, Eye, Phone, ArrowLeft, Loader2, MessageCircle, Tag, Plus } from "lucide-react";
 import { getCategoryIcon, getWhatsAppUrl, getCallUrl, formatPrice, CONDITION_LABELS, timeAgo } from "@/lib/constants";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -24,12 +25,14 @@ type KioskDetail = Tables<"kiosks"> & {
 
 function KioskDetailPage() {
   const { slug } = Route.useParams();
+  const { user } = useAuth();
   const [kiosk, setKiosk] = useState<KioskDetail | null>(null);
   const [listings, setListings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [listingTab, setListingTab] = useState<"all" | "products" | "services">("all");
   const [memberDate, setMemberDate] = useState("");
+  const [ownerName, setOwnerName] = useState("");
 
   useEffect(() => {
     fetchKiosk();
@@ -54,6 +57,11 @@ function KioskDetailPage() {
     // Stable date formatting (avoid hydration mismatch)
     const d = new Date(data.created_at);
     setMemberDate(`${d.toLocaleString("en-GB", { month: "short" })} ${d.getFullYear()}`);
+
+    // Fetch owner display name
+    supabase.from("profiles").select("display_name").eq("user_id", data.owner_id).single().then(({ data: profile }) => {
+      if (profile?.display_name) setOwnerName(profile.display_name);
+    });
 
     // Fetch listings for this kiosk
     const { data: listingsData } = await supabase
@@ -162,7 +170,16 @@ function KioskDetailPage() {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-[18px] font-bold text-bk-dark">Listings ({listings.length})</h2>
-                  <div className="flex gap-1 bg-bk-beige rounded-lg p-0.5">
+                  <div className="flex items-center gap-3">
+                    {user && kiosk.owner_id === user.id && (
+                      <Link
+                        to="/dashboard/create-listing"
+                        className="flex items-center gap-1.5 text-[13px] font-semibold bg-bk-yellow text-bk-dark px-4 py-2 rounded-full hover:bg-bk-yellow-hover transition"
+                      >
+                        <Plus className="w-4 h-4" /> Add Listing
+                      </Link>
+                    )}
+                    <div className="flex gap-1 bg-bk-beige rounded-lg p-0.5">
                     {(["all", "products", "services"] as const).map((t) => (
                       <button
                         key={t}
@@ -174,6 +191,7 @@ function KioskDetailPage() {
                         {t}
                       </button>
                     ))}
+                  </div>
                   </div>
                 </div>
 
@@ -228,7 +246,7 @@ function KioskDetailPage() {
                       {kiosk.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-[15px] font-bold text-bk-dark">{kiosk.name}</p>
+                      <p className="text-[15px] font-bold text-bk-dark">{ownerName || kiosk.name}</p>
                       {memberDate && <p className="text-[12px] text-bk-muted">Member since {memberDate}</p>}
                     </div>
                   </div>

@@ -2,9 +2,10 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserRoles } from "@/hooks/useUserRoles";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { Loader2, User, MapPin, Phone, LogOut } from "lucide-react";
+import { Loader2, User, MapPin, Phone, LogOut, Store } from "lucide-react";
 import { GHANA_REGIONS } from "@/lib/constants";
 
 export const Route = createFileRoute("/profile")({
@@ -27,6 +28,7 @@ interface Profile {
 
 function ProfilePage() {
   const { user, isLoading: authLoading, isAuthenticated, signOut } = useAuth();
+  const { isVendor, loading: rolesLoading } = useUserRoles(user?.id);
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -186,6 +188,27 @@ function ProfilePage() {
               {success && <span className="text-[14px] text-green-600 font-medium">Saved!</span>}
             </div>
           </div>
+
+          {/* Become a Vendor */}
+          {!rolesLoading && !isVendor && (
+            <div className="mt-6 bg-white rounded-2xl p-6 border border-bk-beige">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-bk-yellow/20 flex items-center justify-center">
+                  <Store className="w-6 h-6 text-bk-dark" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-[16px] font-bold text-bk-dark mb-0.5">Start selling on BlueKiosk</h3>
+                  <p className="text-[13px] text-bk-muted">Create your kiosk and list products or services</p>
+                </div>
+                <Link
+                  to="/become-vendor"
+                  className="shrink-0 text-[13px] font-semibold bg-bk-yellow text-bk-dark px-5 py-2.5 rounded-full hover:bg-bk-yellow-hover transition"
+                >
+                  Get Started
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <Footer />

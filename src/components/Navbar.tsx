@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { CartDrawer } from "@/components/CartDrawer";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { User, Store, Menu, X, Heart } from "lucide-react";
@@ -19,7 +18,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-bk-cream/95 backdrop-blur-sm border-b border-bk-beige">
-      <div className="mx-auto max-w-[1280px] px-6 flex items-center justify-between h-16">
+      <div className="mx-auto max-w-[1280px] px-4 md:px-6 flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-bk-dark flex items-center justify-center">
             <span className="text-bk-cream font-bold text-sm">BK</span>
@@ -62,7 +61,6 @@ export default function Navbar() {
               <Heart className="w-5 h-5" />
             </Link>
           )}
-          <CartDrawer />
           {!isLoading && (
             isAuthenticated ? (
               <div className="hidden md:flex items-center gap-3">
@@ -115,80 +113,86 @@ export default function Navbar() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden bg-bk-cream border-t border-bk-beige">
-          <nav className="mx-auto max-w-[1280px] px-6 py-4 space-y-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                onClick={closeMobile}
-                className="block py-3 text-[15px] font-medium text-bk-muted hover:text-bk-dark transition border-b border-bk-beige/50"
-                activeProps={{ className: "text-bk-dark font-semibold" }}
-                activeOptions={{ exact: link.to === "/" }}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <nav className="mx-auto max-w-[1280px] px-4 py-4 flex flex-col">
+            {/* Navigation group */}
+            <div className="space-y-0.5">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={closeMobile}
+                  className="block py-3 text-[15px] font-medium text-bk-muted hover:text-bk-dark transition border-b border-bk-beige/50"
+                  activeProps={{ className: "text-bk-dark font-semibold" }}
+                  activeOptions={{ exact: link.to === "/" }}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              {!isLoading && isAuthenticated && (
+                <Link
+                  to="/favorites"
+                  onClick={closeMobile}
+                  className="block py-3 text-[15px] font-medium text-bk-muted hover:text-bk-dark transition border-b border-bk-beige/50"
+                  activeProps={{ className: "text-bk-dark font-semibold" }}
+                >
+                  Saved
+                </Link>
+              )}
+            </div>
 
+            {/* Divider */}
+            <div className="h-px bg-bk-beige my-2" />
+
+            {/* Action links */}
             {!isLoading && isAuthenticated && (
-              <Link
-                to="/favorites"
-                onClick={closeMobile}
-                className="block py-3 text-[15px] font-medium text-bk-muted hover:text-bk-dark transition border-b border-bk-beige/50"
-                activeProps={{ className: "text-bk-dark font-semibold" }}
-              >
-                Saved
-              </Link>
+              <div className="space-y-0.5">
+                {!rolesLoading && isVendor && (
+                  <Link
+                    to="/dashboard"
+                    onClick={closeMobile}
+                    className="block py-3 text-[15px] font-medium text-bk-muted hover:text-bk-dark transition border-b border-bk-beige/50"
+                    activeProps={{ className: "text-bk-dark font-semibold" }}
+                  >
+                    Dashboard
+                  </Link>
+                )}
+                {!rolesLoading && !isVendor && (
+                  <Link
+                    to="/become-vendor"
+                    onClick={closeMobile}
+                    className="block py-3 text-[15px] font-medium text-bk-muted hover:text-bk-dark transition border-b border-bk-beige/50"
+                  >
+                    Start Selling
+                  </Link>
+                )}
+                <Link
+                  to="/profile"
+                  onClick={closeMobile}
+                  className="block py-3 text-[15px] font-medium text-bk-muted hover:text-bk-dark transition"
+                >
+                  My Profile
+                </Link>
+              </div>
             )}
 
-            {!isLoading && !rolesLoading && isAuthenticated && isVendor && (
-              <Link
-                to="/dashboard"
-                onClick={closeMobile}
-                className="block py-3 text-[15px] font-medium text-bk-muted hover:text-bk-dark transition border-b border-bk-beige/50"
-                activeProps={{ className: "text-bk-dark font-semibold" }}
-              >
-                Dashboard
-              </Link>
-            )}
-
-            {!isLoading && (
-              isAuthenticated ? (
-                <>
-                  {!rolesLoading && !isVendor && (
-                    <Link
-                      to="/become-vendor"
-                      onClick={closeMobile}
-                      className="block py-3 text-[15px] font-medium text-bk-muted hover:text-bk-dark transition border-b border-bk-beige/50"
-                    >
-                      Start Selling
-                    </Link>
-                  )}
-                  <Link
-                    to="/profile"
-                    onClick={closeMobile}
-                    className="block py-3 text-[15px] font-medium text-bk-muted hover:text-bk-dark transition"
-                  >
-                    My Profile
-                  </Link>
-                </>
-              ) : (
-                <div className="flex gap-3 pt-3">
-                  <Link
-                    to="/login"
-                    onClick={closeMobile}
-                    className="flex-1 text-center text-[14px] font-medium text-bk-dark border border-bk-dark py-3 rounded-full hover:bg-bk-beige transition"
-                  >
-                    Log in
-                  </Link>
-                  <Link
-                    to="/register"
-                    onClick={closeMobile}
-                    className="flex-1 text-center text-[14px] font-semibold bg-bk-yellow text-bk-dark py-3 rounded-full hover:bg-bk-yellow-hover transition"
-                  >
-                    Sign Up
-                  </Link>
-                </div>
-              )
+            {/* Auth CTAs at bottom */}
+            {!isLoading && !isAuthenticated && (
+              <div className="flex gap-3 pt-3">
+                <Link
+                  to="/login"
+                  onClick={closeMobile}
+                  className="flex-1 text-center text-[14px] font-medium text-bk-dark border border-bk-dark py-3 rounded-full hover:bg-bk-beige transition"
+                >
+                  Log in
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={closeMobile}
+                  className="flex-1 text-center text-[14px] font-semibold bg-bk-yellow text-bk-dark py-3 rounded-full hover:bg-bk-yellow-hover transition"
+                >
+                  Sign Up
+                </Link>
+              </div>
             )}
           </nav>
         </div>
