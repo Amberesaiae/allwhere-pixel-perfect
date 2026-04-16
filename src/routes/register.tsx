@@ -27,10 +27,11 @@ function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  if (isAuthenticated) {
-    navigate({ to: "/" });
-    return null;
-  }
+  useEffect(() => {
+    if (isAuthenticated) navigate({ to: "/" });
+  }, [isAuthenticated]);
+
+  if (isAuthenticated) return null;
 
   const handleGoogleSignIn = async () => {
     setError("");
