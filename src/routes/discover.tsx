@@ -58,7 +58,7 @@ function DiscoverPage() {
 
     if (selectedCategory) query = query.eq("category_id", selectedCategory);
     if (selectedRegion) query = query.eq("region", selectedRegion);
-    if (selectedCondition) query = query.eq("condition", selectedCondition);
+    if (selectedCondition) query = query.eq("condition", selectedCondition as "new" | "used" | "refurbished");
     if (minPrice) query = query.gte("price", parseFloat(minPrice));
     if (maxPrice) query = query.lte("price", parseFloat(maxPrice));
 
