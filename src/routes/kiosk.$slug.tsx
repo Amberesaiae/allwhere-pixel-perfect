@@ -2,8 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
-import { MapPin, CheckCircle, Eye, Phone, ArrowLeft, Loader2, MessageCircle, Tag } from "lucide-react";
+import { MapPin, CheckCircle, Eye, Phone, ArrowLeft, Loader2, MessageCircle, Tag, Plus } from "lucide-react";
 import { getCategoryIcon, getWhatsAppUrl, getCallUrl, formatPrice, CONDITION_LABELS, timeAgo } from "@/lib/constants";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -24,12 +25,14 @@ type KioskDetail = Tables<"kiosks"> & {
 
 function KioskDetailPage() {
   const { slug } = Route.useParams();
+  const { user } = useAuth();
   const [kiosk, setKiosk] = useState<KioskDetail | null>(null);
   const [listings, setListings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [listingTab, setListingTab] = useState<"all" | "products" | "services">("all");
   const [memberDate, setMemberDate] = useState("");
+  const [ownerName, setOwnerName] = useState("");
 
   useEffect(() => {
     fetchKiosk();
@@ -54,6 +57,11 @@ function KioskDetailPage() {
     // Stable date formatting (avoid hydration mismatch)
     const d = new Date(data.created_at);
     setMemberDate(`${d.toLocaleString("en-GB", { month: "short" })} ${d.getFullYear()}`);
+
+    // Fetch owner display name
+    supabase.from("profiles").select("display_name").eq("user_id", data.owner_id).single().then(({ data: profile }) => {
+      if (profile?.display_name) setOwnerName(profile.display_name);
+    });
 
     // Fetch listings for this kiosk
     const { data: listingsData } = await supabase

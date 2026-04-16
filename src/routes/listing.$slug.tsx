@@ -248,7 +248,7 @@ function ListingDetailPage() {
 
               {/* Contact buttons */}
               <div className="space-y-3 mb-8">
-                {phone && (
+                {phone ? (
                   <>
                     <a
                       href={getWhatsAppUrl(phone, whatsappMsg)}
@@ -265,6 +265,14 @@ function ListingDetailPage() {
                       <Phone className="w-5 h-5" /> Call Seller
                     </a>
                   </>
+                ) : (
+                  <Link
+                    to="/kiosk/$slug"
+                    params={{ slug: listing.kiosks?.slug || "" }}
+                    className="flex items-center justify-center gap-2 w-full text-[15px] font-semibold border-2 border-bk-dark text-bk-dark py-3.5 rounded-full hover:bg-bk-beige transition"
+                  >
+                    Visit Kiosk to Contact Seller
+                  </Link>
                 )}
               </div>
 
@@ -281,13 +289,22 @@ function ListingDetailPage() {
                     </div>
                   </div>
                 </div>
-                <Link
-                  to="/kiosk/$slug"
-                  params={{ slug: listing.kiosks?.slug || "" }}
-                  className="block text-center text-[13px] font-semibold text-bk-dark border border-bk-beige py-2.5 rounded-full hover:bg-bk-beige transition"
-                >
-                  View Kiosk
-                </Link>
+                <div className="space-y-2">
+                  <Link
+                    to="/kiosk/$slug"
+                    params={{ slug: listing.kiosks?.slug || "" }}
+                    className="block text-center text-[13px] font-semibold text-bk-dark border border-bk-beige py-2.5 rounded-full hover:bg-bk-beige transition"
+                  >
+                    View Kiosk
+                  </Link>
+                  <Link
+                    to="/seller/$id"
+                    params={{ id: listing.kiosks?.owner_id || "" }}
+                    className="block text-center text-[13px] font-medium text-bk-muted hover:text-bk-dark py-2 transition"
+                  >
+                    View Seller Profile
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
