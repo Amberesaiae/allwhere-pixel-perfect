@@ -35,7 +35,7 @@ function KioskDetailPage() {
   const fetchKiosk = async () => {
     const { data, error } = await supabase
       .from("kiosks")
-      .select("*, categories(name, slug, icon_name), profiles!kiosks_owner_id_fkey(display_name, avatar_url), kiosk_stats(views_count)")
+      .select("*, categories(name, slug, icon_name), kiosk_stats(views_count)")
       .eq("slug", slug)
       .single();
 
@@ -167,11 +167,11 @@ function KioskDetailPage() {
                   <h3 className="text-[14px] font-semibold text-bk-muted mb-4">Vendor</h3>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 rounded-full bg-bk-beige flex items-center justify-center text-[18px] font-bold text-bk-dark">
-                      {(kiosk.profiles?.display_name || "V").charAt(0).toUpperCase()}
+                      {kiosk.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
                       <p className="text-[15px] font-bold text-bk-dark">
-                        {kiosk.profiles?.display_name || "Vendor"}
+                        {kiosk.name}
                       </p>
                       <p className="text-[12px] text-bk-muted">
                         Member since {new Date(kiosk.created_at).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}
