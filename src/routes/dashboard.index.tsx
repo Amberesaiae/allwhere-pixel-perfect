@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { Loader2, Plus, Pencil, Trash2, Eye, Store, CheckCircle, MapPin } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/dashboard/")({
   head: () => ({
     meta: [
       { title: "Vendor Dashboard | BlueKiosk" },
