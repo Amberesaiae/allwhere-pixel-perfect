@@ -14,6 +14,118 @@ export type Database = {
   }
   public: {
     Tables: {
+      categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon_name: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon_name?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon_name?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      kiosk_stats: {
+        Row: {
+          id: string
+          kiosk_id: string
+          views_count: number
+        }
+        Insert: {
+          id?: string
+          kiosk_id: string
+          views_count?: number
+        }
+        Update: {
+          id?: string
+          kiosk_id?: string
+          views_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kiosk_stats_kiosk_id_fkey"
+            columns: ["kiosk_id"]
+            isOneToOne: true
+            referencedRelation: "kiosks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kiosks: {
+        Row: {
+          category_id: string | null
+          city: string | null
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_verified: boolean
+          name: string
+          owner_id: string
+          phone: string | null
+          region: string | null
+          slug: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          city?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_verified?: boolean
+          name: string
+          owner_id: string
+          phone?: string | null
+          region?: string | null
+          slug: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          city?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_verified?: boolean
+          name?: string
+          owner_id?: string
+          phone?: string | null
+          region?: string | null
+          slug?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kiosks_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -80,6 +192,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_kiosk_views: { Args: { _kiosk_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "customer" | "vendor" | "admin"
