@@ -179,7 +179,7 @@ function KioskDetailPage() {
                         <Plus className="w-4 h-4" /> Add Listing
                       </Link>
                     )}
-                  <div className="flex gap-1 bg-bk-beige rounded-lg p-0.5">
+                    <div className="flex gap-1 bg-bk-beige rounded-lg p-0.5">
                     {(["all", "products", "services"] as const).map((t) => (
                       <button
                         key={t}
