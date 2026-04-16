@@ -31,7 +31,7 @@ export default function CategoryShowcase() {
               to="/discover"
               className={`${cat.color} border rounded-2xl p-6 text-center hover:shadow-lg hover:-translate-y-1 transition-all group`}
             >
-              <span className="text-[40px] block mb-3">{cat.icon}</span>
+              <cat.icon className="w-10 h-10 mx-auto mb-3 text-bk-dark" />
               <h3 className="text-[16px] font-bold text-bk-dark mb-1">{cat.name}</h3>
               <p className="text-[13px] text-bk-muted leading-snug">{cat.desc}</p>
             </Link>
