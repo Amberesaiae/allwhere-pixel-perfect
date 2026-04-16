@@ -10,14 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as HowRemoteFirstSetupsWorkRouteImport } from './routes/how-remote-first-setups-work'
-import { Route as GlobalRouteImport } from './routes/global'
-import { Route as ContactUsRouteImport } from './routes/contact-us'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as CompareRouteImport } from './routes/compare'
-import { Route as CaseStudiesRouteImport } from './routes/case-studies'
-import { Route as AboutRouteImport } from './routes/about'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as IndexRouteImport } from './routes/index'
 
 const TermsRoute = TermsRouteImport.update({
@@ -25,45 +20,19 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HowRemoteFirstSetupsWorkRoute =
-  HowRemoteFirstSetupsWorkRouteImport.update({
-    id: '/how-remote-first-setups-work',
-    path: '/how-remote-first-setups-work',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const GlobalRoute = GlobalRouteImport.update({
-  id: '/global',
-  path: '/global',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ContactUsRoute = ContactUsRouteImport.update({
-  id: '/contact-us',
-  path: '/contact-us',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CompareRoute = CompareRouteImport.update({
-  id: '/compare',
-  path: '/compare',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CaseStudiesRoute = CaseStudiesRouteImport.update({
-  id: '/case-studies',
-  path: '/case-studies',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -74,90 +43,39 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/case-studies': typeof CaseStudiesRoute
-  '/compare': typeof CompareRoute
-  '/contact': typeof ContactRoute
-  '/contact-us': typeof ContactUsRoute
-  '/global': typeof GlobalRoute
-  '/how-remote-first-setups-work': typeof HowRemoteFirstSetupsWorkRoute
-  '/pricing': typeof PricingRoute
+  '/discover': typeof DiscoverRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/case-studies': typeof CaseStudiesRoute
-  '/compare': typeof CompareRoute
-  '/contact': typeof ContactRoute
-  '/contact-us': typeof ContactUsRoute
-  '/global': typeof GlobalRoute
-  '/how-remote-first-setups-work': typeof HowRemoteFirstSetupsWorkRoute
-  '/pricing': typeof PricingRoute
+  '/discover': typeof DiscoverRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/case-studies': typeof CaseStudiesRoute
-  '/compare': typeof CompareRoute
-  '/contact': typeof ContactRoute
-  '/contact-us': typeof ContactUsRoute
-  '/global': typeof GlobalRoute
-  '/how-remote-first-setups-work': typeof HowRemoteFirstSetupsWorkRoute
-  '/pricing': typeof PricingRoute
+  '/discover': typeof DiscoverRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/about'
-    | '/case-studies'
-    | '/compare'
-    | '/contact'
-    | '/contact-us'
-    | '/global'
-    | '/how-remote-first-setups-work'
-    | '/pricing'
-    | '/terms'
+  fullPaths: '/' | '/discover' | '/login' | '/register' | '/terms'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/about'
-    | '/case-studies'
-    | '/compare'
-    | '/contact'
-    | '/contact-us'
-    | '/global'
-    | '/how-remote-first-setups-work'
-    | '/pricing'
-    | '/terms'
-  id:
-    | '__root__'
-    | '/'
-    | '/about'
-    | '/case-studies'
-    | '/compare'
-    | '/contact'
-    | '/contact-us'
-    | '/global'
-    | '/how-remote-first-setups-work'
-    | '/pricing'
-    | '/terms'
+  to: '/' | '/discover' | '/login' | '/register' | '/terms'
+  id: '__root__' | '/' | '/discover' | '/login' | '/register' | '/terms'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
-  CaseStudiesRoute: typeof CaseStudiesRoute
-  CompareRoute: typeof CompareRoute
-  ContactRoute: typeof ContactRoute
-  ContactUsRoute: typeof ContactUsRoute
-  GlobalRoute: typeof GlobalRoute
-  HowRemoteFirstSetupsWorkRoute: typeof HowRemoteFirstSetupsWorkRoute
-  PricingRoute: typeof PricingRoute
+  DiscoverRoute: typeof DiscoverRoute
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
   TermsRoute: typeof TermsRoute
 }
 
@@ -170,60 +88,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/how-remote-first-setups-work': {
-      id: '/how-remote-first-setups-work'
-      path: '/how-remote-first-setups-work'
-      fullPath: '/how-remote-first-setups-work'
-      preLoaderRoute: typeof HowRemoteFirstSetupsWorkRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/global': {
-      id: '/global'
-      path: '/global'
-      fullPath: '/global'
-      preLoaderRoute: typeof GlobalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact-us': {
-      id: '/contact-us'
-      path: '/contact-us'
-      fullPath: '/contact-us'
-      preLoaderRoute: typeof ContactUsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/compare': {
-      id: '/compare'
-      path: '/compare'
-      fullPath: '/compare'
-      preLoaderRoute: typeof CompareRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/case-studies': {
-      id: '/case-studies'
-      path: '/case-studies'
-      fullPath: '/case-studies'
-      preLoaderRoute: typeof CaseStudiesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -238,14 +121,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
-  CaseStudiesRoute: CaseStudiesRoute,
-  CompareRoute: CompareRoute,
-  ContactRoute: ContactRoute,
-  ContactUsRoute: ContactUsRoute,
-  GlobalRoute: GlobalRoute,
-  HowRemoteFirstSetupsWorkRoute: HowRemoteFirstSetupsWorkRoute,
-  PricingRoute: PricingRoute,
+  DiscoverRoute: DiscoverRoute,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
   TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport

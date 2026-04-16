@@ -1,6 +1,4 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 import appCss from "../styles.css?url";
 
@@ -31,8 +29,8 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "allwhere — Employee Device Lifecycle Management" },
-      { name: "description", content: "allwhere automates the entire employee device lifecycle from deployment to retrieval." },
+      { title: "BlueKiosk — Find Trusted Vendors Near You in Ghana" },
+      { name: "description", content: "BlueKiosk is Ghana's trust-broker marketplace connecting buyers with verified local vendors through secure escrow payments and real-time chat." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -40,7 +38,7 @@ export const Route = createRootRoute({
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap",
       },
     ],
   }),
@@ -65,10 +63,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <div className="min-h-screen bg-aw-cream">
-      <Navbar />
+    <div className="min-h-screen bg-background">
       <Outlet />
-      <Footer />
     </div>
   );
 }
