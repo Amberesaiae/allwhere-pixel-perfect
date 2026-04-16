@@ -87,7 +87,7 @@ function DiscoverPage() {
   const handleTabChange = (t: "listings" | "kiosks") => {
     setTab(t);
     setPage(1);
-    navigate({ search: (prev) => ({ ...prev, tab: t }) });
+    navigate({ search: (prev: Record<string, unknown>) => ({ ...prev, tab: t }) });
   };
 
   useEffect(() => { setPage(1); }, [selectedCategory, selectedRegion, selectedCondition, sortBy, dMin, dMax, dSearch, tab]);
@@ -155,7 +155,7 @@ function DiscoverPage() {
     setSelectedCondition("");
     setMinPrice("");
     setMaxPrice("");
-    navigate({ search: (prev) => ({ ...prev, category: "" }) });
+    navigate({ search: (prev: Record<string, unknown>) => ({ ...prev, category: "" }) });
   };
 
   const Sidebar = () => (
@@ -165,7 +165,7 @@ function DiscoverPage() {
         <h3 className="text-[14px] font-bold uppercase tracking-wider text-bk-dark mb-3">Categories</h3>
         <div className="space-y-1">
           <button
-            onClick={() => { setSelectedCategory(""); navigate({ search: (p) => ({ ...p, category: "" }) }); }}
+            onClick={() => { setSelectedCategory(""); navigate({ search: (p: Record<string, unknown>) => ({ ...p, category: "" }) }); }}
             className={`w-full text-left px-3 py-2 rounded-lg text-[13px] font-medium transition ${selectedCategory === "" ? "bg-bk-dark text-white" : "text-bk-dark hover:bg-white/40"}`}
           >
             All Categories
@@ -173,7 +173,7 @@ function DiscoverPage() {
           {categories.map((c) => (
             <button
               key={c.id}
-              onClick={() => { setSelectedCategory(c.id); navigate({ search: (p) => ({ ...p, category: c.slug }) }); }}
+              onClick={() => { setSelectedCategory(c.id); navigate({ search: (p: Record<string, unknown>) => ({ ...p, category: c.slug }) }); }}
               className={`w-full text-left px-3 py-2 rounded-lg text-[13px] font-medium transition ${selectedCategory === c.id ? "bg-bk-dark text-white" : "text-bk-dark hover:bg-white/40"}`}
             >
               {c.name}
