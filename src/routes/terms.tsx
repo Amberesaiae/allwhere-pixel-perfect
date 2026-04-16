@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import LandingHeader from "@/components/landing/LandingHeader";
-import LandingFooter from "@/components/landing/LandingFooter";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
@@ -17,16 +17,16 @@ export const Route = createFileRoute("/terms")({
 function TermsPage() {
   return (
     <>
-      <LandingHeader />
-      <main className="py-16 md:py-24 bg-background">
-        <div className="mx-auto max-w-3xl px-6">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-12">
+      <Navbar />
+      <main className="bg-bk-cream py-16 md:py-24">
+        <div className="mx-auto max-w-[800px] px-6">
+          <h1 className="text-[42px] md:text-[52px] font-bold text-bk-dark tracking-tight mb-12">
             Terms & Privacy
           </h1>
 
           <section className="mb-16">
-            <h2 className="text-2xl font-bold text-foreground mb-6">Terms of Service</h2>
-            <div className="prose prose-sm max-w-none text-muted-foreground leading-relaxed space-y-4">
+            <h2 className="text-[28px] font-bold text-bk-dark mb-8">Terms of Service</h2>
+            <div className="prose prose-sm max-w-none text-[15px] text-bk-dark leading-relaxed space-y-4">
               <p>
                 By using BlueKiosk, you agree to these terms. BlueKiosk provides a marketplace
                 platform connecting buyers with verified vendors in Ghana. All transactions are
@@ -44,8 +44,8 @@ function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-foreground mb-6">Privacy Policy</h2>
-            <div className="prose prose-sm max-w-none text-muted-foreground leading-relaxed space-y-4">
+            <h2 className="text-[28px] font-bold text-bk-dark mb-8">Privacy Policy</h2>
+            <div className="prose prose-sm max-w-none text-[15px] text-bk-dark leading-relaxed space-y-4">
               <p>
                 BlueKiosk collects personal information necessary to provide our marketplace
                 services, including name, email, phone number, and location data.
@@ -61,7 +61,7 @@ function TermsPage() {
           </section>
         </div>
       </main>
-      <LandingFooter />
+      <Footer />
     </>
   );
 }
