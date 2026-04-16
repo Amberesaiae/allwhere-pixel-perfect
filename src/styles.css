@@ -94,7 +94,7 @@
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
 
-  /* Allwhere custom tokens */
+  /* allwhere custom tokens */
   --aw-cream: oklch(0.986 0.005 85);
   --aw-cream-dark: oklch(0.975 0.008 85);
   --aw-beige: oklch(0.955 0.015 80);
@@ -106,8 +106,8 @@
   --aw-muted: oklch(0.50 0.01 60);
   --aw-footer: oklch(0.955 0.015 80);
 
-  --font-heading: "Inter", system-ui, -apple-system, sans-serif;
-  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-heading: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
 }
 
 .dark {
