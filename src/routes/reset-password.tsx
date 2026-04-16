@@ -1,34 +1,38 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-export const Route = createFileRoute("/register")({
+export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
-      { title: "Sign Up | BlueKiosk" },
-      { name: "description", content: "Create your BlueKiosk account and start discovering verified vendors in Ghana." },
+      { title: "Set New Password | BlueKiosk" },
+      { name: "description", content: "Set a new password for your BlueKiosk account." },
     ],
   }),
-  component: RegisterPage,
+  component: ResetPasswordPage,
 });
 
-function RegisterPage() {
-  const { signUp, isAuthenticated } = useAuth();
+function ResetPasswordPage() {
+  const { updatePassword, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [displayName, setDisplayName] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [isRecovery, setIsRecovery] = useState(false);
 
-  if (isAuthenticated) {
-    navigate({ to: "/" });
-    return null;
-  }
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash.includes("type=recovery")) {
+        setIsRecovery(true);
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -37,12 +41,17 @@ function RegisterPage() {
       setError("Password must be at least 6 characters");
       return;
     }
+    if (password !== confirm) {
+      setError("Passwords do not match");
+      return;
+    }
     setLoading(true);
-    const { error: err } = await signUp(email, password, displayName);
+    const { error: err } = await updatePassword(password);
     if (err) {
       setError(err.message);
     } else {
       setSuccess(true);
+      setTimeout(() => navigate({ to: "/" }), 2000);
     }
     setLoading(false);
   };
@@ -54,15 +63,9 @@ function RegisterPage() {
         <div className="min-h-[80vh] flex items-center justify-center bg-bk-cream px-4">
           <div className="w-full max-w-md text-center">
             <div className="bg-white rounded-2xl p-8 border border-bk-beige">
-              <h2 className="text-[22px] font-bold text-bk-dark mb-3">Check your email</h2>
-              <p className="text-[15px] text-bk-muted">
-                We sent a confirmation link to <span className="font-medium text-bk-dark">{email}</span>. Click the link to activate your account.
-              </p>
+              <h2 className="text-[22px] font-bold text-bk-dark mb-3">Password updated</h2>
+              <p className="text-[15px] text-bk-muted">Redirecting you to the homepage...</p>
             </div>
-            <p className="text-[14px] text-bk-muted mt-6">
-              Already confirmed?{" "}
-              <Link to="/login" className="text-bk-dark font-medium hover:underline">Log in</Link>
-            </p>
           </div>
         </div>
       </>
@@ -75,8 +78,8 @@ function RegisterPage() {
       <div className="min-h-[80vh] flex items-center justify-center bg-bk-cream px-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-[28px] font-bold text-bk-dark">Create your account</h1>
-            <p className="text-bk-muted mt-1">Join BlueKiosk as a buyer or vendor</p>
+            <h1 className="text-[28px] font-bold text-bk-dark">Set new password</h1>
+            <p className="text-bk-muted mt-1">Choose a strong password for your account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 border border-bk-beige space-y-5">
@@ -87,33 +90,7 @@ function RegisterPage() {
             )}
 
             <div>
-              <label htmlFor="name" className="block text-[14px] font-medium text-bk-dark mb-1.5">Display Name</label>
-              <input
-                id="name"
-                type="text"
-                required
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-bk-beige bg-bk-cream text-bk-dark text-[15px] focus:outline-none focus:ring-2 focus:ring-bk-yellow"
-                placeholder="Your name"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-[14px] font-medium text-bk-dark mb-1.5">Email</label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-bk-beige bg-bk-cream text-bk-dark text-[15px] focus:outline-none focus:ring-2 focus:ring-bk-yellow"
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-[14px] font-medium text-bk-dark mb-1.5">Password</label>
+              <label htmlFor="password" className="block text-[14px] font-medium text-bk-dark mb-1.5">New Password</label>
               <div className="relative">
                 <input
                   id="password"
@@ -135,24 +112,31 @@ function RegisterPage() {
               </div>
             </div>
 
+            <div>
+              <label htmlFor="confirm" className="block text-[14px] font-medium text-bk-dark mb-1.5">Confirm Password</label>
+              <input
+                id="confirm"
+                type={showPassword ? "text" : "password"}
+                required
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-bk-beige bg-bk-cream text-bk-dark text-[15px] focus:outline-none focus:ring-2 focus:ring-bk-yellow"
+                placeholder="Repeat password"
+              />
+            </div>
+
             <button
               type="submit"
               disabled={loading}
               className="w-full bg-bk-yellow text-bk-dark font-semibold text-[15px] py-3 rounded-full hover:bg-bk-yellow-hover transition disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-              Create Account
+              Update Password
             </button>
-
-            <p className="text-[12px] text-bk-muted text-center">
-              By signing up, you agree to BlueKiosk's{" "}
-              <Link to="/terms" className="underline hover:text-bk-dark">Terms of Service</Link>
-            </p>
           </form>
 
           <p className="text-center text-[14px] text-bk-muted mt-6">
-            Already have an account?{" "}
-            <Link to="/login" className="text-bk-dark font-medium hover:underline">Log in</Link>
+            <Link to="/login" className="text-bk-dark font-medium hover:underline">Back to login</Link>
           </p>
         </div>
       </div>
