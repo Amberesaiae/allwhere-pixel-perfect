@@ -1,74 +1,42 @@
 export default function DeploySection() {
   return (
     <section className="bg-aw-cream py-8">
-      <div className="mx-auto max-w-[1280px] px-6">
+      <div className="mx-auto max-w-[1080px] px-6">
         {/* Section Title */}
-        <h2 className="text-[40px] md:text-[48px] font-bold text-center text-aw-dark mb-12 tracking-tight">
-          How it works
-        </h2>
+        <div className="text-center mb-12">
+          <h2 className="text-[32px] md:text-[40px] font-bold text-aw-dark tracking-tight">
+            <strong>How It Works</strong>
+          </h2>
+        </div>
 
-        {/* Deploy Anywhere Card */}
-        <div className="bg-aw-beige rounded-[24px] p-8 md:p-12 lg:p-16">
-          <div className="text-center mb-10">
-            <h3 className="text-[32px] md:text-[38px] font-bold text-aw-dark tracking-tight mb-3">
-              Deploy anywhere
-            </h3>
-            <p className="text-[17px] text-aw-muted max-w-[560px] mx-auto">
-              Ship equipment to employees anywhere in the world — fast and fully managed.
-            </p>
-          </div>
+        {/* Deploy Anywhere */}
+        <section className="mb-16">
+          <h3 className="text-[32px] md:text-[40px] font-bold text-aw-dark tracking-tight text-center mb-3">
+            <strong>Deploy Anywhere</strong>
+          </h3>
+          <p className="text-[18px] text-aw-muted text-center max-w-[620px] mx-auto mb-10">
+            Ship fully configured devices to employees around the world without lifting a finger
+          </p>
 
           <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
             {/* Left - Globe illustration */}
             <div className="flex-1 flex justify-center">
               <img
-                src="https://cdn.prod.website-files.com/6616a4e4e7e28e5214e3642c/6759dd03b65a6e94c88b7af5_Deploy%20Section%20Image-p-800.avif"
-                alt="Global deployment illustration with globe and shipping routes"
-                className="w-full max-w-[440px] h-auto"
+                src="https://cdn.prod.website-files.com/637be80ebdeb9e966b7a84cd/65fd8b9683df2d4025cda9ad_Benefit%20Img__Global%20Markets.webp"
+                alt="Global deployment illustration showing world map with shipping routes"
+                className="w-full max-w-[425px] h-auto"
                 loading="lazy"
               />
             </div>
 
             {/* Right - Description */}
             <div className="flex-1 max-w-[480px]">
-              <div className="space-y-5">
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-aw-yellow flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-[14px] font-bold text-aw-dark">1</span>
-                  </div>
-                  <div>
-                    <h4 className="text-[17px] font-semibold text-aw-dark mb-1">Choose equipment</h4>
-                    <p className="text-[15px] text-aw-muted leading-relaxed">
-                      Select from our curated catalog of laptops, monitors, peripherals, and more.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-aw-yellow flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-[14px] font-bold text-aw-dark">2</span>
-                  </div>
-                  <div>
-                    <h4 className="text-[17px] font-semibold text-aw-dark mb-1">Enter employee details</h4>
-                    <p className="text-[15px] text-aw-muted leading-relaxed">
-                      Provide the shipping address — domestic or international — and we handle the rest.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-aw-yellow flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-[14px] font-bold text-aw-dark">3</span>
-                  </div>
-                  <div>
-                    <h4 className="text-[17px] font-semibold text-aw-dark mb-1">We deliver it</h4>
-                    <p className="text-[15px] text-aw-muted leading-relaxed">
-                      Equipment is configured, packed, and shipped directly to your employee's door.
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <p className="text-[16px] text-aw-muted leading-relaxed">
+                We source to your device specs, ship fast from regional warehouses, and manage global logistics. Every device arrives work-ready, no IT setup required.
+              </p>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     </section>
   );

@@ -1,36 +1,28 @@
-import { Monitor, Shield, TrendingUp } from "lucide-react";
-
-const cards = [
-  {
-    icon: Monitor,
-    title: "Full fleet visibility",
-    description:
-      "See every device — who has it, where it is, and its current status — in one unified view.",
-  },
-  {
-    icon: Shield,
-    title: "Security & compliance",
-    description:
-      "Ensure every device meets your security policies with automated compliance monitoring.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Cost optimization",
-    description:
-      "Reduce equipment spend by redeploying existing devices and extending asset lifecycles.",
-  },
-];
-
 export default function FleetSection() {
+  const cards = [
+    {
+      sticker: "https://cdn.prod.website-files.com/637be80ebdeb9e966b7a84cd/666c7e9099d4743593a8fbed_Laptop%20Sticker.webp",
+      title: "Instant visibility into every asset and who's using it",
+    },
+    {
+      sticker: "https://cdn.prod.website-files.com/637be80ebdeb9e966b7a84cd/637be80ebdeb9e24587a855a_Small%20Sticker__Broken%20Monitor.webp",
+      title: "At-a-glance device health and lifecycle stage",
+    },
+    {
+      sticker: "https://cdn.prod.website-files.com/637be80ebdeb9e966b7a84cd/637be80ebdeb9e94907a8531_Small%20Sticker__Calendar.svg",
+      title: "Automatic alerts for upcoming actions",
+    },
+  ];
+
   return (
     <section className="bg-aw-cream py-16 md:py-24">
-      <div className="mx-auto max-w-[1280px] px-6">
+      <div className="mx-auto max-w-[1080px] px-6">
         <div className="text-center mb-14">
-          <h2 className="text-[36px] md:text-[44px] font-bold text-aw-dark tracking-tight mb-4">
-            Your fleet at a glance
+          <h2 className="text-[32px] md:text-[40px] font-bold text-aw-dark tracking-tight mb-4">
+            <strong>Your Fleet at a Glance</strong>
           </h2>
-          <p className="text-[17px] text-aw-muted max-w-[560px] mx-auto">
-            Everything you need to manage your organization's equipment — visibility, security, and savings.
+          <p className="text-[18px] text-aw-muted max-w-[680px] mx-auto leading-relaxed">
+            Track every device in real time with one simple view. Bring together the data you need to make fast, confident decisions in one place without digging through spreadsheets.
           </p>
         </div>
 
@@ -40,11 +32,13 @@ export default function FleetSection() {
               key={card.title}
               className="bg-aw-beige rounded-[20px] p-8 flex flex-col items-start"
             >
-              <div className="w-14 h-14 rounded-2xl bg-aw-cream flex items-center justify-center mb-6">
-                <card.icon className="w-6 h-6 text-aw-dark" strokeWidth={1.5} />
-              </div>
-              <h3 className="text-[20px] font-bold text-aw-dark mb-3">{card.title}</h3>
-              <p className="text-[15px] text-aw-muted leading-relaxed">{card.description}</p>
+              <img
+                src={card.sticker}
+                alt=""
+                className="h-[80px] w-auto mb-6"
+                loading="lazy"
+              />
+              <h3 className="text-[18px] font-bold text-aw-dark leading-snug">{card.title}</h3>
             </div>
           ))}
         </div>
