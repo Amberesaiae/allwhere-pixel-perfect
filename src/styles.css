@@ -55,6 +55,10 @@
   --color-bk-dark: var(--bk-dark);
   --color-bk-muted: var(--bk-muted);
   --color-bk-footer: var(--bk-footer);
+  --color-bk-page: var(--bk-page);
+  --color-bk-orange: var(--bk-orange);
+  --color-bk-orange-hover: var(--bk-orange-hover);
+  --color-bk-red: var(--bk-red);
   --font-heading: var(--font-heading);
   --font-body: var(--font-body);
 }
@@ -104,7 +108,11 @@
   --bk-teal: oklch(0.94 0.03 175);
   --bk-dark: oklch(0.145 0.012 60);
   --bk-muted: oklch(0.50 0.01 60);
-  --bk-footer: oklch(0.955 0.015 80);
+  --bk-footer: oklch(0.18 0.012 60);
+  --bk-page: oklch(0.965 0.003 80);
+  --bk-orange: oklch(0.68 0.18 40);
+  --bk-orange-hover: oklch(0.62 0.18 40);
+  --bk-red: oklch(0.58 0.21 25);
 
   --font-heading: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
@@ -160,3 +168,10 @@
     font-family: var(--font-heading);
   }
 }
+
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
