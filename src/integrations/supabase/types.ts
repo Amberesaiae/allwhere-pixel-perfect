@@ -193,6 +193,7 @@ export type Database = {
         Returns: boolean
       }
       increment_kiosk_views: { Args: { _kiosk_id: string }; Returns: undefined }
+      promote_to_vendor: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "customer" | "vendor" | "admin"

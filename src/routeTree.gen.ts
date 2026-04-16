@@ -16,9 +16,13 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as BecomeVendorRouteImport } from './routes/become-vendor'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as ProductHandleRouteImport } from './routes/product.$handle'
 import { Route as KioskSlugRouteImport } from './routes/kiosk.$slug'
+import { Route as DashboardCreateKioskRouteImport } from './routes/dashboard.create-kiosk'
+import { Route as DashboardEditKioskIdRouteImport } from './routes/dashboard.edit-kiosk.$id'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -55,9 +59,19 @@ const DiscoverRoute = DiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BecomeVendorRoute = BecomeVendorRouteImport.update({
+  id: '/become-vendor',
+  path: '/become-vendor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductHandleRoute = ProductHandleRouteImport.update({
@@ -70,9 +84,20 @@ const KioskSlugRoute = KioskSlugRouteImport.update({
   path: '/kiosk/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardCreateKioskRoute = DashboardCreateKioskRouteImport.update({
+  id: '/dashboard/create-kiosk',
+  path: '/dashboard/create-kiosk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardEditKioskIdRoute = DashboardEditKioskIdRouteImport.update({
+  id: '/dashboard/edit-kiosk/$id',
+  path: '/dashboard/edit-kiosk/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/become-vendor': typeof BecomeVendorRoute
   '/discover': typeof DiscoverRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
@@ -80,11 +105,15 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/kiosk/$slug': typeof KioskSlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/edit-kiosk/$id': typeof DashboardEditKioskIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/become-vendor': typeof BecomeVendorRoute
   '/discover': typeof DiscoverRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
@@ -92,12 +121,16 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/kiosk/$slug': typeof KioskSlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/edit-kiosk/$id': typeof DashboardEditKioskIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/become-vendor': typeof BecomeVendorRoute
   '/discover': typeof DiscoverRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
@@ -105,13 +138,17 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/kiosk/$slug': typeof KioskSlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/edit-kiosk/$id': typeof DashboardEditKioskIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/become-vendor'
     | '/discover'
     | '/forgot-password'
     | '/login'
@@ -119,11 +156,15 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/terms'
+    | '/dashboard/create-kiosk'
     | '/kiosk/$slug'
     | '/product/$handle'
+    | '/dashboard/'
+    | '/dashboard/edit-kiosk/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/become-vendor'
     | '/discover'
     | '/forgot-password'
     | '/login'
@@ -131,11 +172,15 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/terms'
+    | '/dashboard/create-kiosk'
     | '/kiosk/$slug'
     | '/product/$handle'
+    | '/dashboard'
+    | '/dashboard/edit-kiosk/$id'
   id:
     | '__root__'
     | '/'
+    | '/become-vendor'
     | '/discover'
     | '/forgot-password'
     | '/login'
@@ -143,12 +188,16 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/terms'
+    | '/dashboard/create-kiosk'
     | '/kiosk/$slug'
     | '/product/$handle'
+    | '/dashboard/'
+    | '/dashboard/edit-kiosk/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BecomeVendorRoute: typeof BecomeVendorRoute
   DiscoverRoute: typeof DiscoverRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
@@ -156,8 +205,11 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
+  DashboardCreateKioskRoute: typeof DashboardCreateKioskRoute
   KioskSlugRoute: typeof KioskSlugRoute
   ProductHandleRoute: typeof ProductHandleRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardEditKioskIdRoute: typeof DashboardEditKioskIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -211,11 +263,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/become-vendor': {
+      id: '/become-vendor'
+      path: '/become-vendor'
+      fullPath: '/become-vendor'
+      preLoaderRoute: typeof BecomeVendorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/product/$handle': {
@@ -232,11 +298,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KioskSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/create-kiosk': {
+      id: '/dashboard/create-kiosk'
+      path: '/dashboard/create-kiosk'
+      fullPath: '/dashboard/create-kiosk'
+      preLoaderRoute: typeof DashboardCreateKioskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/edit-kiosk/$id': {
+      id: '/dashboard/edit-kiosk/$id'
+      path: '/dashboard/edit-kiosk/$id'
+      fullPath: '/dashboard/edit-kiosk/$id'
+      preLoaderRoute: typeof DashboardEditKioskIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BecomeVendorRoute: BecomeVendorRoute,
   DiscoverRoute: DiscoverRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
@@ -244,8 +325,11 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
+  DashboardCreateKioskRoute: DashboardCreateKioskRoute,
   KioskSlugRoute: KioskSlugRoute,
   ProductHandleRoute: ProductHandleRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardEditKioskIdRoute: DashboardEditKioskIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
