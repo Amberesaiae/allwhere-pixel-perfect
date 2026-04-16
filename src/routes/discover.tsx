@@ -81,7 +81,7 @@ function DiscoverPage() {
 
   const handleTabChange = (t: "listings" | "kiosks") => {
     setTab(t);
-    navigate({ search: (prev) => ({ ...prev, tab: t }) });
+    navigate({ search: (prev: Record<string, unknown>) => ({ ...prev, tab: t }) });
   };
 
   useEffect(() => {
