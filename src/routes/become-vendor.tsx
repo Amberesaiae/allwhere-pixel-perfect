@@ -6,12 +6,13 @@ import { useUserRoles } from "@/hooks/useUserRoles";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import { Loader2, Store, CheckCircle, Shield, MessageSquare } from "lucide-react";
+import StepProgress from "@/components/StepProgress";
 
 export const Route = createFileRoute("/become-vendor")({
   head: () => ({
     meta: [
-      { title: "Become a Vendor | BlueKiosk" },
-      { name: "description", content: "Set up your kiosk on BlueKiosk and start selling to buyers across Ghana." },
+      { title: "Become a vendor · bluekiosk" },
+      { name: "description", content: "Set up your kiosk on bluekiosk and start selling to buyers across Ghana." },
     ],
   }),
   component: BecomeVendorPage,
@@ -41,10 +42,11 @@ function BecomeVendorPage() {
         <Navbar />
         <div className="min-h-[60vh] flex items-center justify-center bg-bk-cream px-4">
           <div className="w-full max-w-md text-center">
-            <h1 className="text-[28px] font-bold text-bk-dark mb-3">Sign up to sell on BlueKiosk</h1>
+            <h1 className="text-[28px] font-bold text-bk-dark mb-3">Sign up to sell on bluekiosk</h1>
             <p className="text-[15px] text-bk-muted mb-6">Create an account first, then set up your vendor kiosk.</p>
             <Link
               to="/register"
+              search={{ redirect: "/become-vendor" }}
               className="inline-block text-[15px] font-semibold bg-bk-yellow text-bk-dark px-8 py-3 rounded-full hover:bg-bk-yellow-hover transition"
             >
               Create Account
@@ -87,7 +89,7 @@ function BecomeVendorPage() {
     }
     await refetch();
     setPromoting(false);
-    navigate({ to: "/dashboard" });
+    navigate({ to: "/dashboard/create-kiosk" });
   };
 
   return (
@@ -96,9 +98,10 @@ function BecomeVendorPage() {
       <main className="min-h-screen bg-bk-cream">
         <section className="py-16 md:py-24">
           <div className="mx-auto max-w-[800px] px-6">
+            <StepProgress steps={["Activate vendor", "Create kiosk", "Post listing"]} current={1} />
             <div className="text-center mb-14">
               <h1 className="text-[36px] md:text-[48px] font-bold text-bk-dark tracking-tight mb-4">
-                Start Selling on BlueKiosk
+                Start Selling on bluekiosk
               </h1>
               <p className="text-[18px] text-bk-muted max-w-[520px] mx-auto">
                 Set up your kiosk in minutes and reach buyers across all 16 regions of Ghana
