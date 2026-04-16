@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tantml/react-router";
+import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
