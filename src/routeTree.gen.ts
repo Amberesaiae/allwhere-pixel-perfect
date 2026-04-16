@@ -15,13 +15,18 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as BecomeVendorRouteImport } from './routes/become-vendor'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as SellerIdRouteImport } from './routes/seller.$id'
 import { Route as ProductHandleRouteImport } from './routes/product.$handle'
+import { Route as ListingSlugRouteImport } from './routes/listing.$slug'
 import { Route as KioskSlugRouteImport } from './routes/kiosk.$slug'
+import { Route as DashboardCreateListingRouteImport } from './routes/dashboard.create-listing'
 import { Route as DashboardCreateKioskRouteImport } from './routes/dashboard.create-kiosk'
+import { Route as DashboardEditListingIdRouteImport } from './routes/dashboard.edit-listing.$id'
 import { Route as DashboardEditKioskIdRouteImport } from './routes/dashboard.edit-kiosk.$id'
 
 const TermsRoute = TermsRouteImport.update({
@@ -54,6 +59,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FavoritesRoute = FavoritesRouteImport.update({
+  id: '/favorites',
+  path: '/favorites',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiscoverRoute = DiscoverRouteImport.update({
   id: '/discover',
   path: '/discover',
@@ -74,9 +84,19 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SellerIdRoute = SellerIdRouteImport.update({
+  id: '/seller/$id',
+  path: '/seller/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductHandleRoute = ProductHandleRouteImport.update({
   id: '/product/$handle',
   path: '/product/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListingSlugRoute = ListingSlugRouteImport.update({
+  id: '/listing/$slug',
+  path: '/listing/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KioskSlugRoute = KioskSlugRouteImport.update({
@@ -84,9 +104,19 @@ const KioskSlugRoute = KioskSlugRouteImport.update({
   path: '/kiosk/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardCreateListingRoute = DashboardCreateListingRouteImport.update({
+  id: '/dashboard/create-listing',
+  path: '/dashboard/create-listing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardCreateKioskRoute = DashboardCreateKioskRouteImport.update({
   id: '/dashboard/create-kiosk',
   path: '/dashboard/create-kiosk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardEditListingIdRoute = DashboardEditListingIdRouteImport.update({
+  id: '/dashboard/edit-listing/$id',
+  path: '/dashboard/edit-listing/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardEditKioskIdRoute = DashboardEditKioskIdRouteImport.update({
@@ -99,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/become-vendor': typeof BecomeVendorRoute
   '/discover': typeof DiscoverRoute
+  '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
@@ -106,15 +137,20 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
+  '/dashboard/create-listing': typeof DashboardCreateListingRoute
   '/kiosk/$slug': typeof KioskSlugRoute
+  '/listing/$slug': typeof ListingSlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/seller/$id': typeof SellerIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/edit-kiosk/$id': typeof DashboardEditKioskIdRoute
+  '/dashboard/edit-listing/$id': typeof DashboardEditListingIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/become-vendor': typeof BecomeVendorRoute
   '/discover': typeof DiscoverRoute
+  '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
@@ -122,16 +158,21 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
+  '/dashboard/create-listing': typeof DashboardCreateListingRoute
   '/kiosk/$slug': typeof KioskSlugRoute
+  '/listing/$slug': typeof ListingSlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/seller/$id': typeof SellerIdRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/edit-kiosk/$id': typeof DashboardEditKioskIdRoute
+  '/dashboard/edit-listing/$id': typeof DashboardEditListingIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/become-vendor': typeof BecomeVendorRoute
   '/discover': typeof DiscoverRoute
+  '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
@@ -139,10 +180,14 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
+  '/dashboard/create-listing': typeof DashboardCreateListingRoute
   '/kiosk/$slug': typeof KioskSlugRoute
+  '/listing/$slug': typeof ListingSlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/seller/$id': typeof SellerIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/edit-kiosk/$id': typeof DashboardEditKioskIdRoute
+  '/dashboard/edit-listing/$id': typeof DashboardEditListingIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -150,6 +195,7 @@ export interface FileRouteTypes {
     | '/'
     | '/become-vendor'
     | '/discover'
+    | '/favorites'
     | '/forgot-password'
     | '/login'
     | '/profile'
@@ -157,15 +203,20 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/dashboard/create-kiosk'
+    | '/dashboard/create-listing'
     | '/kiosk/$slug'
+    | '/listing/$slug'
     | '/product/$handle'
+    | '/seller/$id'
     | '/dashboard/'
     | '/dashboard/edit-kiosk/$id'
+    | '/dashboard/edit-listing/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/become-vendor'
     | '/discover'
+    | '/favorites'
     | '/forgot-password'
     | '/login'
     | '/profile'
@@ -173,15 +224,20 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/dashboard/create-kiosk'
+    | '/dashboard/create-listing'
     | '/kiosk/$slug'
+    | '/listing/$slug'
     | '/product/$handle'
+    | '/seller/$id'
     | '/dashboard'
     | '/dashboard/edit-kiosk/$id'
+    | '/dashboard/edit-listing/$id'
   id:
     | '__root__'
     | '/'
     | '/become-vendor'
     | '/discover'
+    | '/favorites'
     | '/forgot-password'
     | '/login'
     | '/profile'
@@ -189,16 +245,21 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/dashboard/create-kiosk'
+    | '/dashboard/create-listing'
     | '/kiosk/$slug'
+    | '/listing/$slug'
     | '/product/$handle'
+    | '/seller/$id'
     | '/dashboard/'
     | '/dashboard/edit-kiosk/$id'
+    | '/dashboard/edit-listing/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BecomeVendorRoute: typeof BecomeVendorRoute
   DiscoverRoute: typeof DiscoverRoute
+  FavoritesRoute: typeof FavoritesRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   ProfileRoute: typeof ProfileRoute
@@ -206,10 +267,14 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
   DashboardCreateKioskRoute: typeof DashboardCreateKioskRoute
+  DashboardCreateListingRoute: typeof DashboardCreateListingRoute
   KioskSlugRoute: typeof KioskSlugRoute
+  ListingSlugRoute: typeof ListingSlugRoute
   ProductHandleRoute: typeof ProductHandleRoute
+  SellerIdRoute: typeof SellerIdRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardEditKioskIdRoute: typeof DashboardEditKioskIdRoute
+  DashboardEditListingIdRoute: typeof DashboardEditListingIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -256,6 +321,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/favorites': {
+      id: '/favorites'
+      path: '/favorites'
+      fullPath: '/favorites'
+      preLoaderRoute: typeof FavoritesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/discover': {
       id: '/discover'
       path: '/discover'
@@ -284,11 +356,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/seller/$id': {
+      id: '/seller/$id'
+      path: '/seller/$id'
+      fullPath: '/seller/$id'
+      preLoaderRoute: typeof SellerIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/product/$handle': {
       id: '/product/$handle'
       path: '/product/$handle'
       fullPath: '/product/$handle'
       preLoaderRoute: typeof ProductHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/listing/$slug': {
+      id: '/listing/$slug'
+      path: '/listing/$slug'
+      fullPath: '/listing/$slug'
+      preLoaderRoute: typeof ListingSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kiosk/$slug': {
@@ -298,11 +384,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KioskSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/create-listing': {
+      id: '/dashboard/create-listing'
+      path: '/dashboard/create-listing'
+      fullPath: '/dashboard/create-listing'
+      preLoaderRoute: typeof DashboardCreateListingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/create-kiosk': {
       id: '/dashboard/create-kiosk'
       path: '/dashboard/create-kiosk'
       fullPath: '/dashboard/create-kiosk'
       preLoaderRoute: typeof DashboardCreateKioskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/edit-listing/$id': {
+      id: '/dashboard/edit-listing/$id'
+      path: '/dashboard/edit-listing/$id'
+      fullPath: '/dashboard/edit-listing/$id'
+      preLoaderRoute: typeof DashboardEditListingIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/edit-kiosk/$id': {
@@ -319,6 +419,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BecomeVendorRoute: BecomeVendorRoute,
   DiscoverRoute: DiscoverRoute,
+  FavoritesRoute: FavoritesRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   ProfileRoute: ProfileRoute,
@@ -326,10 +427,14 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
   DashboardCreateKioskRoute: DashboardCreateKioskRoute,
+  DashboardCreateListingRoute: DashboardCreateListingRoute,
   KioskSlugRoute: KioskSlugRoute,
+  ListingSlugRoute: ListingSlugRoute,
   ProductHandleRoute: ProductHandleRoute,
+  SellerIdRoute: SellerIdRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardEditKioskIdRoute: DashboardEditKioskIdRoute,
+  DashboardEditListingIdRoute: DashboardEditListingIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
