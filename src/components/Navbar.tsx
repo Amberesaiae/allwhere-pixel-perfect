@@ -9,7 +9,6 @@ export default function Navbar() {
   const { isAuthenticated, user, isLoading } = useAuth();
   const { isVendor, loading: rolesLoading } = useUserRoles(user?.id);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const location = useLocation();
 
   const closeMobile = () => setMobileOpen(false);
 
