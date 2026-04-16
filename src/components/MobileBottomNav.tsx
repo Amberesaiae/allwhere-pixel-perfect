@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Search, Plus, Heart, User } from "lucide-react";
+import { Home, Search, Plus, Store, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 
@@ -15,7 +15,7 @@ export default function MobileBottomNav() {
         <Home className="w-5 h-5" />
         <span className="text-[10px] font-medium">Home</span>
       </Link>
-      <Link to="/discover" className="flex flex-col items-center gap-0.5 text-bk-muted" activeProps={{ className: "text-bk-dark" }}>
+      <Link to="/discover" search={{ tab: "listings", category: "", q: "" }} className="flex flex-col items-center gap-0.5 text-bk-muted" activeProps={{ className: "text-bk-dark" }}>
         <Search className="w-5 h-5" />
         <span className="text-[10px] font-medium">Discover</span>
       </Link>
@@ -26,9 +26,9 @@ export default function MobileBottomNav() {
       >
         <Plus className="w-6 h-6" />
       </Link>
-      <Link to="/favorites" className="flex flex-col items-center gap-0.5 text-bk-muted" activeProps={{ className: "text-bk-dark" }}>
-        <Heart className="w-5 h-5" />
-        <span className="text-[10px] font-medium">Saved</span>
+      <Link to="/discover" search={{ tab: "kiosks", category: "", q: "" }} className="flex flex-col items-center gap-0.5 text-bk-muted" activeProps={{ className: "text-bk-dark" }}>
+        <Store className="w-5 h-5" />
+        <span className="text-[10px] font-medium">Kiosks</span>
       </Link>
       <Link to={isAuthenticated ? "/profile" : "/login"} className="flex flex-col items-center gap-0.5 text-bk-muted" activeProps={{ className: "text-bk-dark" }}>
         <User className="w-5 h-5" />
