@@ -1,126 +1,160 @@
 
 
-# BlueKiosk: Ghana Marketplace — Phase 1 + Landing Page
+# BlueKiosk: Listing-Centric Marketplace Implementation
 
-## Overview
-Replace the entire allwhere website clone with the BlueKiosk marketplace application. Build the landing page and all Phase 1 features (auth, kiosk discovery, vendor onboarding, kiosk management) using Lovable Cloud (Supabase) for backend, with migration documentation for FastAPI.
+## Current State
 
-## Architecture
+**Completed (Phases 1-4 of original plan):**
+- Auth (email/password + Google OAuth), profiles, user_roles
+- Kiosk CRUD with image upload, vendor dashboard
+- Discovery feed (kiosk-centric), kiosk detail page
+- Vendor onboarding (become-vendor flow)
+- 8 seeded demo kiosks, categories table
 
-```text
-src/
-├── routes/
-│   ├── __root.tsx          — Shell + bottom nav + QueryClientProvider
-│   ├── index.tsx           — Landing page (public)
-│   ├── login.tsx           — Login form
-│   ├── register.tsx        — Registration form
-│   ├── reset-password.tsx  — Password reset
-│   ├── discover.tsx        — Kiosk discovery feed (public)
-│   ├── search.tsx          — Search results
-│   ├── kiosk.$kioskId.tsx  — Kiosk detail page
-│   ├── vendor/
-│   │   ├── dashboard.tsx   — Vendor dashboard
-│   │   ├── create-kiosk.tsx — 4-step kiosk wizard
-│   │   └── edit-kiosk.$kioskId.tsx
-│   ├── profile.tsx         — User profile/settings
-│   └── terms.tsx           — Terms & Privacy
-├── components/
-│   ├── ui/                 — shadcn/ui (keep existing)
-│   ├── landing/            — Landing page sections
-│   ├── discovery/          — Kiosk cards, filters, search
-│   ├── kiosk/              — Kiosk detail, wizard steps
-│   ├── auth/               — Auth forms, guards
-│   └── layout/             — BottomNav, Header, AuthGuard
-├── hooks/
-│   ├── use-auth.ts
-│   └── use-kiosks.ts
-└── styles.css              — New BlueKiosk design tokens
-```
+**Existing DB tables:** categories, kiosks, kiosk_stats, profiles, user_roles
 
-## Database Schema (Supabase/Lovable Cloud)
+**What is missing per the uploaded specs:**
+- No `listings` table (the atomic unit of a classifieds marketplace)
+- No `listing_images` table (multi-photo support)
+- No `favorites` table
+- No listing CRUD routes
+- Kiosk detail page says "no products yet" with no way to add any
+- No WhatsApp/Call contact buttons on kiosk or listing pages
+- No seller public profile
+- Discovery is kiosk-centric, not listing-centric (Jiji/Tonaton model)
+- No chat infrastructure (Phase 2 spec -- deferred to FastAPI migration)
+- No transactions/orders (Phase 2 spec -- deferred to FastAPI migration)
+- Hydration error from SSR date formatting in kiosk detail
+- `product.$handle.tsx` is a leftover from allwhere -- should be removed
 
-**Tables to create via migrations:**
+---
 
-1. **profiles** — extends auth.users (full_name, phone, avatar_url, created_at)
-2. **user_roles** — role enum (customer, vendor, admin) per security guidelines
-3. **categories** — id, name, slug, icon (seeded: Food & Beverage, Electronics, Fashion, Services, etc.)
-4. **kiosks** — id, owner_id (FK profiles), name, category_id, description, region, city, landmark, lat, lng, cover_image_url, logo_url, status (draft/published), whatsapp_number, created_at
-5. **kiosk_stats** — kiosk_id, views_count, avg_response_time (computed later)
+## Plan: Phase 2A -- Listings, Favorites, and Contact Flows
 
-**RLS policies:** Users read all published kiosks. Vendors CRUD their own kiosks. has_role() security definer function for admin checks.
+This implements the listing layer that makes BlueKiosk function like Jiji/Tonaton, while deferring chat and transactions to the FastAPI migration as specified in the specs.
 
-**Storage buckets:** `kiosk-images` for cover photos and logos.
+### Step 1: Database Migration
 
-## Design System (replacing allwhere tokens)
+Create tables via migration:
 
-- **Primary**: `#2563EB` (Blue-600) — BlueKiosk brand blue
-- **Primary foreground**: White
-- **Accent/CTA**: `#3B82F6` (Blue-500)
-- **Background**: `#FAFAFA` (near-white)
-- **Surface/Cards**: `#FFFFFF`
-- **Text**: `#111827` (Gray-900), muted `#6B7280` (Gray-500)
-- **Success**: `#10B981`, Warning: `#F59E0B`, Error: `#EF4444`
-- **Font**: Inter (body + headings)
-- **Border radius**: 12px cards, 8px inputs, full-round pills
-- **Mobile-first** with bottom navigation bar
+**`listing_condition` enum:** `new`, `used`, `refurbished`
 
-## Implementation Batches
+**`listings` table:**
+- id, kiosk_id (FK kiosks), owner_id, title, slug, description
+- price (numeric), currency (text, default 'GHS')
+- condition (listing_condition enum), is_negotiable (boolean, default false)
+- listing_type (text: 'product' or 'service')
+- status (text: 'active', 'sold', 'inactive', default 'active')
+- category_id (FK categories), region, city
+- stock_quantity (integer, nullable), pricing_type (text: 'fixed', 'range', 'quote')
+- price_max (numeric, nullable -- for range pricing)
+- created_at, updated_at
 
-### Batch 1: Clean slate + design system + landing page
-- Delete all allwhere components and routes
-- Update `styles.css` with BlueKiosk tokens (blue palette, Inter font)
-- Update `__root.tsx` — remove allwhere Navbar/Footer, add responsive shell
-- Build landing page at `/` with:
-  - Hero: "Find Trusted Vendors Near You in Ghana"
-  - Benefits section (Trust, Discovery, Secure Payments)
-  - How it works (3 steps)
-  - CTA: "Browse Kiosks" + "Sign Up"
+**`listing_images` table:**
+- id, listing_id (FK listings), image_url, sort_order, created_at
 
-### Batch 2: Auth (Supabase)
-- Enable Lovable Cloud auth (email/password)
-- Create `profiles` table + `user_roles` table via migrations
-- Build `/register` — form with name, email, password, phone (optional)
-- Build `/login` — email/password + "Forgot password?"
-- Build `/reset-password` — password reset flow
-- Auth guard component for protected routes
-- Profile menu with "Become a Vendor" option
+**`favorites` table:**
+- id, user_id, listing_id (FK listings), created_at
+- unique(user_id, listing_id)
 
-### Batch 3: Discovery feed + kiosk detail
-- Seed `categories` table (Food, Electronics, Fashion, Services, Health, Education, etc.)
-- Create `kiosks` table with RLS
-- Build `/discover` — search bar, location indicator, category chips, kiosk card grid, infinite scroll
-- Build `/kiosk/$kioskId` — cover image, logo, name, badge, tabs (Products/Services/About), Chat + WhatsApp buttons
-- Build `/search` — categorized results (kiosks, products, services sections)
-- Empty state with fallback suggestions
+**`listing_stats` table:**
+- id, listing_id (FK listings), views_count (default 0)
 
-### Batch 4: Vendor onboarding + kiosk management
-- "Become a Vendor" flow — adds vendor role
-- Build `/vendor/create-kiosk` — 4-step wizard (Basic Info → Location → Branding → Review)
-- Image upload to Supabase Storage for cover/logo
-- Build `/vendor/dashboard` — kiosk cards with status badges, stats, FAB
-- Publish flow with confirmation modal
-- Build `/vendor/edit-kiosk/$kioskId` — pre-filled edit form
-- Bottom navigation: Home, Search, Profile (customer) / Dashboard, Profile (vendor)
+**RLS:** Public SELECT for active listings, owner INSERT/UPDATE/DELETE for listings and listing_images, authenticated user CRUD own favorites, public SELECT on listing_stats.
 
-### Batch 5: Polish + migration docs
-- Responsive bottom nav with role-aware items
-- Location auto-detection (browser Geolocation API)
-- Kiosk view count tracking
-- Create `MIGRATION_GUIDE.md` documenting:
-  - Supabase → PostgreSQL + SQLAlchemy schema mapping
-  - Server functions → FastAPI endpoint mapping
-  - Auth → FastAPI JWT auth mapping
-  - Storage → S3 adapter mapping
+**Triggers:** Auto-create listing_stats on new listing, increment_listing_views function.
+
+**Seed data:** 12-16 sample listings across existing demo kiosks with realistic Ghana items and GHS prices.
+
+### Step 2: Listing CRUD Routes
+
+**`/dashboard/create-listing`** -- 3-step wizard:
+1. Basic Info: type (product/service), title, category, description, kiosk select
+2. Pricing: price (GHS), condition, negotiable toggle, stock (products), pricing type (services)
+3. Images: up to 5 image uploads with preview and reorder
+
+**`/dashboard/edit-listing/$id`** -- Pre-filled edit form with image management
+
+**Update `/dashboard`** -- Add "Listings" tab alongside "Kiosks" tab with listing cards, status toggle (active/sold), edit/delete actions
+
+### Step 3: Listing-Centric Discovery
+
+**Refactor `/discover`** -- Two tabs: "Listings" (default) and "Kiosks"
+- Listings tab: card grid with thumbnail, title, price (GHS), condition badge, "Negotiable" badge, location, time-ago
+- Add price range filter (min/max)
+- Add condition filter chips
+- Sort options: Newest, Price Low-High, Price High-Low
+
+### Step 4: Listing Detail Page
+
+**New route `/listing/$slug`:**
+- Image gallery (horizontal scroll mobile, grid desktop)
+- Title, price, condition badge, negotiable badge, posted date
+- Description, seller info card
+- Contact sidebar: WhatsApp button (pre-filled message), Call button, link to kiosk
+- Heart/favorite toggle (requires auth)
+- View count tracking
+- Related listings from same kiosk
+
+### Step 5: WhatsApp and Call Contact Buttons
+
+- Add helper functions: `getWhatsAppUrl(phone, message)`, `getCallUrl(phone)`
+- Add WhatsApp + Call buttons to listing detail and kiosk detail pages
+- Update kiosk detail page to replace "Contact Vendor" register link with real contact buttons
+
+### Step 6: Favorites System
+
+**New route `/favorites`** -- grid of saved listings for authenticated users
+- Heart icon on listing cards and detail page
+- Add "Saved" link to Navbar for logged-in users
+
+### Step 7: Kiosk Detail Enhancement
+
+- Update `/kiosk/$slug` to show the kiosk's actual listings grid (Products tab, Services tab)
+- Fix hydration error (stable date formatting)
+- Add WhatsApp/Call buttons to vendor sidebar
+
+### Step 8: Seller Public Profile
+
+**New route `/seller/$id`:**
+- Display name, avatar, member since, region, verification badge
+- Active listings count
+- Grid of their active listings, links to their kiosks
+
+### Step 9: Cleanup
+
+- Delete `product.$handle.tsx` (allwhere leftover)
+- Update Navbar with "Saved" link for authenticated users
+- Save updated architecture to project memory
+
+---
 
 ## Technical Details
 
-- **Auth**: Supabase auth with `onAuthStateChange` listener + `requireSupabaseAuth` middleware for server functions
-- **Data fetching**: TanStack Query via route loaders + server functions
-- **Image upload**: Supabase Storage with signed URLs
-- **Search**: Supabase full-text search on kiosk name + description
-- **Location**: Browser Geolocation API → reverse geocode to Ghana regions
-- **No Celery/Socket.io**: These are deferred to the FastAPI migration. Document as migration items.
+**New files:**
+- `src/routes/listing.$slug.tsx`
+- `src/routes/dashboard.create-listing.tsx`
+- `src/routes/dashboard.edit-listing.$id.tsx`
+- `src/routes/favorites.tsx`
+- `src/routes/seller.$id.tsx`
+- Migration SQL file
 
-## Files to delete
-All allwhere-specific files: `HeroSection.tsx`, `DeploySection.tsx`, `LifecycleSection.tsx`, `RedeploySection.tsx`, `ConnectSection.tsx`, `FleetSection.tsx`, `CTASection.tsx`, `Navbar.tsx`, `Footer.tsx`, and all allwhere route files (`about.tsx`, `pricing.tsx`, `contact.tsx`, `contact-us.tsx`, `compare.tsx`, `case-studies.tsx`, `global.tsx`, `how-remote-first-setups-work.tsx`).
+**Modified files:**
+- `src/routes/discover.tsx` -- listing-centric tabs, new filters
+- `src/routes/kiosk.$slug.tsx` -- listings grid, contact buttons, hydration fix
+- `src/routes/dashboard.index.tsx` -- listings tab
+- `src/components/Navbar.tsx` -- Saved link
+- `src/lib/constants.ts` -- WhatsApp/Call helpers, condition labels
+
+**Deleted files:**
+- `src/routes/product.$handle.tsx`
+
+**Storage:** Reuse existing `kiosk-images` bucket for listing images.
+
+**What is NOT in scope (deferred to FastAPI migration per specs):**
+- In-app chat (Socket.io)
+- Orders and transactions
+- BluPay escrow and payments
+- Disputes and admin console
+- Celery background jobs
 
