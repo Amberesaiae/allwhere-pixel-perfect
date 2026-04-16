@@ -1,14 +1,15 @@
 import { Link } from "@tanstack/react-router";
+import { Monitor, Shirt, UtensilsCrossed, Sparkles, Home, Car, BookOpen, Wrench } from "lucide-react";
 
 const categories = [
-  { name: "Electronics", icon: "💻", desc: "Phones, laptops, accessories & gadgets", color: "bg-blue-50 border-blue-200" },
-  { name: "Fashion", icon: "👗", desc: "Clothing, shoes, bags & jewelry", color: "bg-pink-50 border-pink-200" },
-  { name: "Food & Groceries", icon: "🥘", desc: "Fresh produce, spices & packaged goods", color: "bg-green-50 border-green-200" },
-  { name: "Health & Beauty", icon: "✨", desc: "Skincare, cosmetics & wellness products", color: "bg-purple-50 border-purple-200" },
-  { name: "Home & Living", icon: "🏠", desc: "Furniture, décor & kitchen essentials", color: "bg-amber-50 border-amber-200" },
-  { name: "Auto & Parts", icon: "🚗", desc: "Vehicle parts, tools & accessories", color: "bg-slate-50 border-slate-200" },
-  { name: "Books & Stationery", icon: "📚", desc: "Textbooks, office supplies & art materials", color: "bg-orange-50 border-orange-200" },
-  { name: "Services", icon: "🔧", desc: "Repairs, tailoring, printing & more", color: "bg-teal-50 border-teal-200" },
+  { name: "Electronics", icon: Monitor, desc: "Phones, laptops, accessories & gadgets", color: "bg-blue-50 border-blue-200" },
+  { name: "Fashion", icon: Shirt, desc: "Clothing, shoes, bags & jewelry", color: "bg-pink-50 border-pink-200" },
+  { name: "Food & Groceries", icon: UtensilsCrossed, desc: "Fresh produce, spices & packaged goods", color: "bg-green-50 border-green-200" },
+  { name: "Health & Beauty", icon: Sparkles, desc: "Skincare, cosmetics & wellness products", color: "bg-purple-50 border-purple-200" },
+  { name: "Home & Living", icon: Home, desc: "Furniture, décor & kitchen essentials", color: "bg-amber-50 border-amber-200" },
+  { name: "Auto & Parts", icon: Car, desc: "Vehicle parts, tools & accessories", color: "bg-slate-50 border-slate-200" },
+  { name: "Books & Stationery", icon: BookOpen, desc: "Textbooks, office supplies & art materials", color: "bg-orange-50 border-orange-200" },
+  { name: "Services", icon: Wrench, desc: "Repairs, tailoring, printing & more", color: "bg-teal-50 border-teal-200" },
 ];
 
 export default function CategoryShowcase() {
@@ -30,7 +31,7 @@ export default function CategoryShowcase() {
               to="/discover"
               className={`${cat.color} border rounded-2xl p-6 text-center hover:shadow-lg hover:-translate-y-1 transition-all group`}
             >
-              <span className="text-[40px] block mb-3">{cat.icon}</span>
+              <cat.icon className="w-10 h-10 mx-auto mb-3 text-bk-dark" />
               <h3 className="text-[16px] font-bold text-bk-dark mb-1">{cat.name}</h3>
               <p className="text-[13px] text-bk-muted leading-snug">{cat.desc}</p>
             </Link>
