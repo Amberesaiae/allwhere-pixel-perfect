@@ -1,145 +1,120 @@
 
 
-# BlueKiosk: Comprehensive UI/UX Audit and Conformance Fix
+# Mowafer-Style Architecture Adoption for BlueKiosk
 
-## Critical Issues (Runtime-Breaking)
+## What I observed in the references
 
-### 1. Remove ALL Shopify remnants
-The app crashes because `FeaturedProducts.tsx` references the deleted `product.$handle` route, and `__root.tsx` calls `useCartSync` which imports the Shopify cart store.
+**Visual system (Mowafer):**
+- White card surfaces on light grey page bg (not full cream)
+- Logo tile (yellow rounded square) + tagline beneath, large pill search bar, account + cart top-right
+- Horizontal category strip with line icons under header (always visible)
+- Hero is a **collage of promo tiles** (1 large + small grid) -- not a single illustration
+- "Deals of the Day" section with **category tabs** + featured large card + dense product grid
+- Product cards: white, red circular `-10%` badge top-left, image, tiny SUBCATEGORY label, title, strike-through old price + bold orange new price, yellow circle add-to-cart + heart + compare icons
+- **Teal full-width promo banners** between sections (e.g. "50% OFF ALL ELECTRONICS")
+- Category page = left sidebar (Category yellow box, Sub-Category, Brand, Ratings, Price) + product grid + right vertical promo card + sort/grid-list toggle
+- Product detail = thumbnail strip + main image + title + rating + price + qty + Add to Cart, then Description/Specifications/Reviews tabs, then Related Products
+- Cart = list of rows with qty stepper + summary card, or grid of cards on mobile
+- Footer = dark with Categories / About / Contact / Help columns, payment icons, social
+- **Mobile** = same logo header, search, horizontal category chips, bottom tab bar (Home, Categories, Cart, Search, Account)
 
-**Delete files:**
-- `src/components/CartDrawer.tsx`
-- `src/stores/cartStore.ts`
-- `src/lib/shopify.ts`
-- `src/hooks/useCartSync.ts`
-- `src/components/landing/FeaturedProducts.tsx`
+**Workflow (User Journey diagram):**
+Home → (Latest Offers / Best Sellers / All Categories / Cart) → Category Page → Product Page → Product Info → Add to Wishlist / Compare / Cart → Checkout → Login/Signup → Address → Payment → Done. Plus Account, Articles, About, Contact branches.
 
-**Modify:**
-- `src/routes/__root.tsx` -- remove `useCartSync` import and call
-- `src/components/Navbar.tsx` -- remove `CartDrawer` import and `<CartDrawer />` usage
-- `src/routes/index.tsx` -- replace `FeaturedProducts` with new `FeaturedListings` component
+## How this maps to BlueKiosk (classifieds, no cart/checkout)
 
-### 2. Create `FeaturedListings.tsx`
-New component that queries the 8 most recent active listings from the database and displays them in a card grid with thumbnail, price, condition badge, location, and link to `/listing/$slug`. Same visual style as discover listing cards.
+BlueKiosk is contact-to-buy (WhatsApp/phone), so I'll **adopt the visual architecture** but **not** the cart/checkout flow. The "Add to Cart" yellow button becomes "Contact Seller", compare icon becomes "Save". Everything else translates 1:1.
 
----
+## Plan
 
-## Navbar Fixes (390px mobile-first)
+### 1. Global shell rework (Navbar)
+Two-row sticky header matching Mowafer:
+- **Row 1**: Logo (yellow rounded square + "BlueKiosk" + tiny Ghana tagline) | large pill search with yellow circular search button | language/region | account dropdown | "Sell" yellow pill (replaces cart)
+- **Row 2**: Horizontal scrollable category strip with line icons (Electronics, Fashion, Food, Health & Beauty, Home, Auto, Books, Services) -- click navigates to `/discover?category=slug`
+- **Mobile**: Logo + search + menu icon in row 1; category chips horizontally scrollable in row 2; bottom tab bar (Home, Discover, Sell, Saved, Profile)
 
-### 3. Remove cart icon
-Cart icon is Shopify-specific. Remove entirely from Navbar.
+### 2. Landing page rebuild (`src/routes/index.tsx`)
+Replace current section list with Mowafer-aligned flow:
+1. **HeroCollage** (new) -- 1 large featured-listing tile + 4 smaller category/promo tiles in a grid
+2. **DealsOfTheDay** (new) -- category tabs (Electronics/Food/Fashion/...) with one large featured card on the left + 2-column listing grid on the right; switching tabs swaps content
+3. **Teal promo banner** -- "Verified vendors across Ghana -- Browse all listings"
+4. **TopListings** (refactored FeaturedListings) -- horizontally scrolling row of dense product cards
+5. **CategoryTiles** (refactored CategoryShowcase) -- 3 large color tiles (Mobile Phones / Food & Supplies / Crisps & Snacks pattern) using bk-teal, bk-pink-ish, bk-yellow
+6. **TopRatedKiosks** (refactored VendorSpotlight) -- horizontal scroll of verified kiosk cards
+7. **Dark footer** (refactored)
 
-### 4. Fix heart icon auth timing
-Ensure heart icon only renders after auth state fully resolves. Verified it has the guard, but removing CartDrawer will shift layout -- needs re-check.
+Delete: `StatsStrip`, `ValueProp`, `BenefitsSection`, `HowItWorks`, `Testimonials`, `FAQSection`, `BottomCTA` from landing (move FAQ to a separate `/faq` route later).
 
-### 5. Improve mobile menu hierarchy (per Phase 1 spec Section 7)
-Current mobile menu is a flat list. Restructure to:
-- Navigation links (Home, Discover, Saved) -- grouped at top
-- Visual divider
-- Action links (Dashboard / Start Selling)
-- Auth CTAs at bottom as full-width buttons
+### 3. Listing card redesign (used everywhere)
+White card, image fills top, optional red `Verified` or `Negotiable` circular badge top-left, tiny uppercase kiosk-name label, title (2-line clamp), strike-through old price (when applicable) + bold orange price, bottom row = yellow circular WhatsApp/Contact button + heart save + small location chip. Replace current card markup in `FeaturedListings`, `discover.tsx` listings grid, and `kiosk.$slug.tsx` listings.
 
----
+### 4. Discover page rework (Mowafer category page layout)
+- **Desktop**: left sidebar (yellow Category box highlighting active, then Sub-Category, Region, Condition chips, Price min/max with apply button) + main grid + right vertical promo card
+- Top of main: "Electronics -- 24 Results" + Sort By dropdown + grid/list toggle
+- **Mobile**: filters behind a bottom-sheet "Filters" toggle, horizontal category chip row sticks under header
+- Add list-view variant (wider cards, description snippet visible)
+- Pagination controls at bottom (matching circular pager style)
 
-## Landing Page Fixes
+### 5. Listing detail rework (`listing.$slug.tsx`)
+Restructure to Mowafer product detail:
+- Left thumbnail column + large main image
+- Right: title, star rating, strike-through price + new price, qty placeholder removed (since classifieds), `Contact via WhatsApp` yellow pill + heart + share icons
+- Tabs: **Description / Specifications / Reviews & Ratings**
+- **Related Products** horizontal scroll
+- Seller card moves into sidebar with kiosk name, owner display name, "View Kiosk" + "View Seller Profile" links, fallback contact note
 
-### 6. Update Hero CTA
-Change "BROWSE KIOSKS" to "Browse Listings" -- the platform is now listing-centric (Jiji/Tonaton model).
+### 6. Footer redesign
+Dark `bk-dark` background, four columns (Categories / About Us / Contact / Help Center), small "BK" logo top-left with one-line description, payment-method placeholders (Mobile Money / Visa), social icons, copyright row. Replace current Footer.
 
-### 7. Replace hero image
-Current image is from allwhere CDN (`cdn.prod.website-files.com`). Replace with a simple CSS-gradient illustration or abstract SVG pattern relevant to a Ghana marketplace.
+### 7. Mobile bottom tab bar (new component)
+Fixed bottom on mobile only: Home, Discover, **Sell** (centered, larger, yellow), Saved, Profile. Hidden on desktop. Add bottom padding to main content so it doesn't get covered.
 
-### 8. CategoryShowcase -- pass category to discover
-Currently links to `/discover` without params. Update to pass `?category=electronics` (using slug). The discover page must also read this URL param.
+### 8. Color & token additions
+Add to `src/styles.css`:
+- `bk-teal` already exists; add `bk-orange` (for prices), `bk-red` (for discount badges), `bk-page` (light grey page bg `#f5f5f5`)
+- Switch page background from `bk-cream` to `bk-page` so white cards pop (Mowafer's signature look)
 
-### 9. VendorSpotlight CTA
-Update "VIEW ALL VENDORS" link to navigate to `/discover` with the kiosks tab selected.
+### 9. Workflow alignment with User Journey diagram
+Map Mowafer journey to BlueKiosk reality:
+- Home → Latest Listings / Top Kiosks / All Categories / **Saved** (replaces Cart)
+- Category Page (`/discover?category=`) → Listing Page → **Contact Seller via WhatsApp** (replaces Add to Cart→Checkout flow)
+- Account → Profile → Edit, Saved Listings, My Kiosks (vendors), Become a Vendor (customers)
+- No cart/address/payment branch -- explicitly omitted (deferred to BluPay phase per specs)
 
----
+## Files
 
-## Discover Page Fixes (390px mobile)
+**Create:**
+- `src/components/landing/HeroCollage.tsx`
+- `src/components/landing/DealsOfTheDay.tsx`
+- `src/components/landing/PromoBanner.tsx`
+- `src/components/landing/CategoryTiles.tsx` (replaces CategoryShowcase)
+- `src/components/ListingCard.tsx` (shared card used everywhere)
+- `src/components/MobileBottomNav.tsx`
+- `src/components/CategoryStrip.tsx` (horizontal category icons row)
 
-### 10. Mobile filter UX improvements
-At 390px, three dropdowns stack vertically consuming half the viewport. Fix:
-- Search bar stays full-width
-- Category + Region in a horizontally scrollable row on mobile
-- Listing filters (condition chips, price range, sort) behind a collapsible "Filters" toggle on mobile
-- Reduce grid gap from `gap-4` to `gap-3` and horizontal padding from `px-6` to `px-4` on mobile
+**Rewrite:**
+- `src/components/Navbar.tsx` -- two-row Mowafer header
+- `src/components/Footer.tsx` -- dark Mowafer footer
+- `src/routes/index.tsx` -- new section order
+- `src/routes/discover.tsx` -- sidebar filter layout, list/grid toggle, pagination
+- `src/routes/listing.$slug.tsx` -- thumbnail+main+tabs+related
+- `src/components/landing/FeaturedListings.tsx` -- horizontal scroll using ListingCard
+- `src/components/landing/VendorSpotlight.tsx` -- horizontal scroll of kiosk cards
+- `src/routes/__root.tsx` -- mount MobileBottomNav, switch page bg to bk-page
+- `src/styles.css` -- add bk-page, bk-orange, bk-red tokens
 
-### 11. Search debounce
-Add 300ms debounce before firing `fetchListings`/`fetchKiosks` on filter changes.
+**Delete (from landing flow only):**
+- `src/components/landing/StatsStrip.tsx`
+- `src/components/landing/ValueProp.tsx`
+- `src/components/landing/BenefitsSection.tsx`
+- `src/components/landing/HowItWorks.tsx`
+- `src/components/landing/Testimonials.tsx`
+- `src/components/landing/FAQSection.tsx`
+- `src/components/landing/BottomCTA.tsx`
+- `src/components/landing/HeroSection.tsx` (replaced by HeroCollage)
+- `src/components/landing/CategoryShowcase.tsx` (replaced by CategoryTiles)
 
-### 12. Accept category from URL search params
-When arriving from CategoryShowcase, read `?category=slug` from URL and pre-select the matching category filter.
+**No database changes.** All work is UI architecture.
 
----
-
-## Listing Detail Fixes
-
-### 13. Add seller profile link
-Currently only shows "View Kiosk" button in seller card. Add "View Seller Profile" link below it, linking to `/seller/$id` using `listing.kiosks.owner_id`.
-
-### 14. Fallback contact when no phone
-When kiosk has no phone number, show: "Visit the kiosk page to contact this seller" with a link to `/kiosk/$slug` instead of an empty space.
-
----
-
-## Kiosk Detail Fixes
-
-### 15. Show vendor display_name in sidebar
-Currently shows `kiosk.name` as the vendor identity. Fetch the owner's profile (`profiles.display_name` via `owner_id`) and display it in the vendor card.
-
-### 16. "Add Listing" button for kiosk owners
-When the logged-in user is the kiosk's `owner_id`, show an "Add Listing" floating button or inline button that links to `/dashboard/create-listing`.
-
----
-
-## Dashboard and Post-Action Redirects
-
-### 17. Redirect after listing creation to kiosk page
-Currently redirects to `/dashboard`. Change to redirect to `/kiosk/$slug` (the kiosk the listing was added to) so the vendor sees their new listing in context.
-
----
-
-## Profile Page Fixes
-
-### 18. Add "Become a Vendor" link for non-vendors
-Per spec: profile menu should include "Become a Vendor" for customers. Add a card or link in the profile page linking to `/become-vendor` when the user is not a vendor.
-
----
-
-## Auth Flow Redirect Fix
-
-### 19. Redirect to /discover after login/register
-Currently both `login.tsx` and `register.tsx` redirect to `/` on success. Per Phase 1 spec: "Auto-login and redirect to Discovery feed." Change redirect target to `/discover`.
-
----
-
-## Technical Summary
-
-**Delete 5 files:** CartDrawer, cartStore, shopify.ts, useCartSync, FeaturedProducts
-
-**Create 1 file:** `src/components/landing/FeaturedListings.tsx`
-
-**Modify 11 files:**
-- `__root.tsx` -- remove useCartSync
-- `index.tsx` -- swap FeaturedProducts for FeaturedListings
-- `Navbar.tsx` -- remove CartDrawer, restructure mobile menu
-- `HeroSection.tsx` -- update CTA text and hero image
-- `CategoryShowcase.tsx` -- pass category search param
-- `discover.tsx` -- URL search params, mobile filter UX, debounce
-- `listing.$slug.tsx` -- seller profile link, fallback contact
-- `kiosk.$slug.tsx` -- owner profile name, owner "Add Listing" button
-- `dashboard.create-listing.tsx` -- redirect to kiosk page
-- `profile.tsx` -- become-vendor link for non-vendors
-- `login.tsx` -- redirect to /discover
-
-**No database changes required.**
-
-**Deferred (FastAPI migration per specs):**
-- In-app chat (Socket.io/WebSocket)
-- Orders, transactions, escrow (BluPay)
-- Admin console and disputes
-- Bottom navigation bar (requires chat + orders tabs)
-- Push notifications, read receipts, typing indicators
+**Deferred (per specs, FastAPI phase):** in-app chat, orders, escrow/BluPay, true cart+checkout flow.
 
