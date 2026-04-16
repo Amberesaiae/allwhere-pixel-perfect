@@ -21,7 +21,6 @@ import { Route as BecomeVendorRouteImport } from './routes/become-vendor'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as SellerIdRouteImport } from './routes/seller.$id'
-import { Route as ProductHandleRouteImport } from './routes/product.$handle'
 import { Route as ListingSlugRouteImport } from './routes/listing.$slug'
 import { Route as KioskSlugRouteImport } from './routes/kiosk.$slug'
 import { Route as DashboardCreateListingRouteImport } from './routes/dashboard.create-listing'
@@ -89,11 +88,6 @@ const SellerIdRoute = SellerIdRouteImport.update({
   path: '/seller/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProductHandleRoute = ProductHandleRouteImport.update({
-  id: '/product/$handle',
-  path: '/product/$handle',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ListingSlugRoute = ListingSlugRouteImport.update({
   id: '/listing/$slug',
   path: '/listing/$slug',
@@ -140,7 +134,6 @@ export interface FileRoutesByFullPath {
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
   '/kiosk/$slug': typeof KioskSlugRoute
   '/listing/$slug': typeof ListingSlugRoute
-  '/product/$handle': typeof ProductHandleRoute
   '/seller/$id': typeof SellerIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/edit-kiosk/$id': typeof DashboardEditKioskIdRoute
@@ -161,7 +154,6 @@ export interface FileRoutesByTo {
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
   '/kiosk/$slug': typeof KioskSlugRoute
   '/listing/$slug': typeof ListingSlugRoute
-  '/product/$handle': typeof ProductHandleRoute
   '/seller/$id': typeof SellerIdRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/edit-kiosk/$id': typeof DashboardEditKioskIdRoute
@@ -183,7 +175,6 @@ export interface FileRoutesById {
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
   '/kiosk/$slug': typeof KioskSlugRoute
   '/listing/$slug': typeof ListingSlugRoute
-  '/product/$handle': typeof ProductHandleRoute
   '/seller/$id': typeof SellerIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/edit-kiosk/$id': typeof DashboardEditKioskIdRoute
@@ -206,7 +197,6 @@ export interface FileRouteTypes {
     | '/dashboard/create-listing'
     | '/kiosk/$slug'
     | '/listing/$slug'
-    | '/product/$handle'
     | '/seller/$id'
     | '/dashboard/'
     | '/dashboard/edit-kiosk/$id'
@@ -227,7 +217,6 @@ export interface FileRouteTypes {
     | '/dashboard/create-listing'
     | '/kiosk/$slug'
     | '/listing/$slug'
-    | '/product/$handle'
     | '/seller/$id'
     | '/dashboard'
     | '/dashboard/edit-kiosk/$id'
@@ -248,7 +237,6 @@ export interface FileRouteTypes {
     | '/dashboard/create-listing'
     | '/kiosk/$slug'
     | '/listing/$slug'
-    | '/product/$handle'
     | '/seller/$id'
     | '/dashboard/'
     | '/dashboard/edit-kiosk/$id'
@@ -270,7 +258,6 @@ export interface RootRouteChildren {
   DashboardCreateListingRoute: typeof DashboardCreateListingRoute
   KioskSlugRoute: typeof KioskSlugRoute
   ListingSlugRoute: typeof ListingSlugRoute
-  ProductHandleRoute: typeof ProductHandleRoute
   SellerIdRoute: typeof SellerIdRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardEditKioskIdRoute: typeof DashboardEditKioskIdRoute
@@ -363,13 +350,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SellerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/product/$handle': {
-      id: '/product/$handle'
-      path: '/product/$handle'
-      fullPath: '/product/$handle'
-      preLoaderRoute: typeof ProductHandleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/listing/$slug': {
       id: '/listing/$slug'
       path: '/listing/$slug'
@@ -430,7 +410,6 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardCreateListingRoute: DashboardCreateListingRoute,
   KioskSlugRoute: KioskSlugRoute,
   ListingSlugRoute: ListingSlugRoute,
-  ProductHandleRoute: ProductHandleRoute,
   SellerIdRoute: SellerIdRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardEditKioskIdRoute: DashboardEditKioskIdRoute,
