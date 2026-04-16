@@ -7,8 +7,8 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
-      { title: "Set New Password | BlueKiosk" },
-      { name: "description", content: "Set a new password for your BlueKiosk account." },
+      { title: "Set new password · bluekiosk" },
+      { name: "description", content: "Set a new password for your bluekiosk account." },
     ],
   }),
   component: ResetPasswordPage,

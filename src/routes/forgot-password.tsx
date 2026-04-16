@@ -3,12 +3,13 @@ import Navbar from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
 import { useState, type FormEvent } from "react";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
     meta: [
-      { title: "Forgot Password | BlueKiosk" },
-      { name: "description", content: "Reset your BlueKiosk password." },
+      { title: "Forgot password · bluekiosk" },
+      { name: "description", content: "Reset your bluekiosk password." },
     ],
   }),
   component: ForgotPasswordPage,
@@ -30,6 +31,7 @@ function ForgotPasswordPage() {
       setError(err.message);
     } else {
       setSent(true);
+      toast.success("Reset link sent — check your email");
     }
     setLoading(false);
   };
