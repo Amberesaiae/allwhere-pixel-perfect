@@ -1,5 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { useCartSync } from "@/hooks/useCartSync";
+import { AuthProvider } from "@/hooks/useAuth";
 
 import appCss from "../styles.css?url";
 
@@ -65,8 +66,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   useCartSync();
   return (
-    <div className="min-h-screen bg-bk-cream">
-      <Outlet />
-    </div>
+    <AuthProvider>
+      <div className="min-h-screen bg-bk-cream">
+        <Outlet />
+      </div>
+    </AuthProvider>
   );
 }
