@@ -10,10 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SafetyRouteImport } from './routes/safety'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as HelpRouteImport } from './routes/help'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as DiscoverRouteImport } from './routes/discover'
@@ -31,6 +33,11 @@ import { Route as DashboardEditKioskIdRouteImport } from './routes/dashboard.edi
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SafetyRoute = SafetyRouteImport.update({
+  id: '/safety',
+  path: '/safety',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -51,6 +58,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -125,10 +137,12 @@ export interface FileRoutesByFullPath {
   '/discover': typeof DiscoverRoute
   '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/help': typeof HelpRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/safety': typeof SafetyRoute
   '/terms': typeof TermsRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
@@ -145,10 +159,12 @@ export interface FileRoutesByTo {
   '/discover': typeof DiscoverRoute
   '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/help': typeof HelpRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/safety': typeof SafetyRoute
   '/terms': typeof TermsRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
@@ -166,10 +182,12 @@ export interface FileRoutesById {
   '/discover': typeof DiscoverRoute
   '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/help': typeof HelpRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/safety': typeof SafetyRoute
   '/terms': typeof TermsRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
@@ -188,10 +206,12 @@ export interface FileRouteTypes {
     | '/discover'
     | '/favorites'
     | '/forgot-password'
+    | '/help'
     | '/login'
     | '/profile'
     | '/register'
     | '/reset-password'
+    | '/safety'
     | '/terms'
     | '/dashboard/create-kiosk'
     | '/dashboard/create-listing'
@@ -208,10 +228,12 @@ export interface FileRouteTypes {
     | '/discover'
     | '/favorites'
     | '/forgot-password'
+    | '/help'
     | '/login'
     | '/profile'
     | '/register'
     | '/reset-password'
+    | '/safety'
     | '/terms'
     | '/dashboard/create-kiosk'
     | '/dashboard/create-listing'
@@ -228,10 +250,12 @@ export interface FileRouteTypes {
     | '/discover'
     | '/favorites'
     | '/forgot-password'
+    | '/help'
     | '/login'
     | '/profile'
     | '/register'
     | '/reset-password'
+    | '/safety'
     | '/terms'
     | '/dashboard/create-kiosk'
     | '/dashboard/create-listing'
@@ -249,10 +273,12 @@ export interface RootRouteChildren {
   DiscoverRoute: typeof DiscoverRoute
   FavoritesRoute: typeof FavoritesRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  HelpRoute: typeof HelpRoute
   LoginRoute: typeof LoginRoute
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SafetyRoute: typeof SafetyRoute
   TermsRoute: typeof TermsRoute
   DashboardCreateKioskRoute: typeof DashboardCreateKioskRoute
   DashboardCreateListingRoute: typeof DashboardCreateListingRoute
@@ -271,6 +297,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/safety': {
+      id: '/safety'
+      path: '/safety'
+      fullPath: '/safety'
+      preLoaderRoute: typeof SafetyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -299,6 +332,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -401,10 +441,12 @@ const rootRouteChildren: RootRouteChildren = {
   DiscoverRoute: DiscoverRoute,
   FavoritesRoute: FavoritesRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  HelpRoute: HelpRoute,
   LoginRoute: LoginRoute,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SafetyRoute: SafetyRoute,
   TermsRoute: TermsRoute,
   DashboardCreateKioskRoute: DashboardCreateKioskRoute,
   DashboardCreateListingRoute: DashboardCreateListingRoute,
