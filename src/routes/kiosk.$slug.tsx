@@ -170,6 +170,15 @@ function KioskDetailPage() {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-[18px] font-bold text-bk-dark">Listings ({listings.length})</h2>
+                  <div className="flex items-center gap-3">
+                    {user && kiosk.owner_id === user.id && (
+                      <Link
+                        to="/dashboard/create-listing"
+                        className="flex items-center gap-1.5 text-[13px] font-semibold bg-bk-yellow text-bk-dark px-4 py-2 rounded-full hover:bg-bk-yellow-hover transition"
+                      >
+                        <Plus className="w-4 h-4" /> Add Listing
+                      </Link>
+                    )}
                   <div className="flex gap-1 bg-bk-beige rounded-lg p-0.5">
                     {(["all", "products", "services"] as const).map((t) => (
                       <button
