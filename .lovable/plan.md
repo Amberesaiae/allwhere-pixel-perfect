@@ -1,160 +1,145 @@
 
 
-# BlueKiosk: Listing-Centric Marketplace Implementation
+# BlueKiosk: Comprehensive UI/UX Audit and Conformance Fix
 
-## Current State
+## Critical Issues (Runtime-Breaking)
 
-**Completed (Phases 1-4 of original plan):**
-- Auth (email/password + Google OAuth), profiles, user_roles
-- Kiosk CRUD with image upload, vendor dashboard
-- Discovery feed (kiosk-centric), kiosk detail page
-- Vendor onboarding (become-vendor flow)
-- 8 seeded demo kiosks, categories table
+### 1. Remove ALL Shopify remnants
+The app crashes because `FeaturedProducts.tsx` references the deleted `product.$handle` route, and `__root.tsx` calls `useCartSync` which imports the Shopify cart store.
 
-**Existing DB tables:** categories, kiosks, kiosk_stats, profiles, user_roles
+**Delete files:**
+- `src/components/CartDrawer.tsx`
+- `src/stores/cartStore.ts`
+- `src/lib/shopify.ts`
+- `src/hooks/useCartSync.ts`
+- `src/components/landing/FeaturedProducts.tsx`
 
-**What is missing per the uploaded specs:**
-- No `listings` table (the atomic unit of a classifieds marketplace)
-- No `listing_images` table (multi-photo support)
-- No `favorites` table
-- No listing CRUD routes
-- Kiosk detail page says "no products yet" with no way to add any
-- No WhatsApp/Call contact buttons on kiosk or listing pages
-- No seller public profile
-- Discovery is kiosk-centric, not listing-centric (Jiji/Tonaton model)
-- No chat infrastructure (Phase 2 spec -- deferred to FastAPI migration)
-- No transactions/orders (Phase 2 spec -- deferred to FastAPI migration)
-- Hydration error from SSR date formatting in kiosk detail
-- `product.$handle.tsx` is a leftover from allwhere -- should be removed
+**Modify:**
+- `src/routes/__root.tsx` -- remove `useCartSync` import and call
+- `src/components/Navbar.tsx` -- remove `CartDrawer` import and `<CartDrawer />` usage
+- `src/routes/index.tsx` -- replace `FeaturedProducts` with new `FeaturedListings` component
+
+### 2. Create `FeaturedListings.tsx`
+New component that queries the 8 most recent active listings from the database and displays them in a card grid with thumbnail, price, condition badge, location, and link to `/listing/$slug`. Same visual style as discover listing cards.
 
 ---
 
-## Plan: Phase 2A -- Listings, Favorites, and Contact Flows
+## Navbar Fixes (390px mobile-first)
 
-This implements the listing layer that makes BlueKiosk function like Jiji/Tonaton, while deferring chat and transactions to the FastAPI migration as specified in the specs.
+### 3. Remove cart icon
+Cart icon is Shopify-specific. Remove entirely from Navbar.
 
-### Step 1: Database Migration
+### 4. Fix heart icon auth timing
+Ensure heart icon only renders after auth state fully resolves. Verified it has the guard, but removing CartDrawer will shift layout -- needs re-check.
 
-Create tables via migration:
-
-**`listing_condition` enum:** `new`, `used`, `refurbished`
-
-**`listings` table:**
-- id, kiosk_id (FK kiosks), owner_id, title, slug, description
-- price (numeric), currency (text, default 'GHS')
-- condition (listing_condition enum), is_negotiable (boolean, default false)
-- listing_type (text: 'product' or 'service')
-- status (text: 'active', 'sold', 'inactive', default 'active')
-- category_id (FK categories), region, city
-- stock_quantity (integer, nullable), pricing_type (text: 'fixed', 'range', 'quote')
-- price_max (numeric, nullable -- for range pricing)
-- created_at, updated_at
-
-**`listing_images` table:**
-- id, listing_id (FK listings), image_url, sort_order, created_at
-
-**`favorites` table:**
-- id, user_id, listing_id (FK listings), created_at
-- unique(user_id, listing_id)
-
-**`listing_stats` table:**
-- id, listing_id (FK listings), views_count (default 0)
-
-**RLS:** Public SELECT for active listings, owner INSERT/UPDATE/DELETE for listings and listing_images, authenticated user CRUD own favorites, public SELECT on listing_stats.
-
-**Triggers:** Auto-create listing_stats on new listing, increment_listing_views function.
-
-**Seed data:** 12-16 sample listings across existing demo kiosks with realistic Ghana items and GHS prices.
-
-### Step 2: Listing CRUD Routes
-
-**`/dashboard/create-listing`** -- 3-step wizard:
-1. Basic Info: type (product/service), title, category, description, kiosk select
-2. Pricing: price (GHS), condition, negotiable toggle, stock (products), pricing type (services)
-3. Images: up to 5 image uploads with preview and reorder
-
-**`/dashboard/edit-listing/$id`** -- Pre-filled edit form with image management
-
-**Update `/dashboard`** -- Add "Listings" tab alongside "Kiosks" tab with listing cards, status toggle (active/sold), edit/delete actions
-
-### Step 3: Listing-Centric Discovery
-
-**Refactor `/discover`** -- Two tabs: "Listings" (default) and "Kiosks"
-- Listings tab: card grid with thumbnail, title, price (GHS), condition badge, "Negotiable" badge, location, time-ago
-- Add price range filter (min/max)
-- Add condition filter chips
-- Sort options: Newest, Price Low-High, Price High-Low
-
-### Step 4: Listing Detail Page
-
-**New route `/listing/$slug`:**
-- Image gallery (horizontal scroll mobile, grid desktop)
-- Title, price, condition badge, negotiable badge, posted date
-- Description, seller info card
-- Contact sidebar: WhatsApp button (pre-filled message), Call button, link to kiosk
-- Heart/favorite toggle (requires auth)
-- View count tracking
-- Related listings from same kiosk
-
-### Step 5: WhatsApp and Call Contact Buttons
-
-- Add helper functions: `getWhatsAppUrl(phone, message)`, `getCallUrl(phone)`
-- Add WhatsApp + Call buttons to listing detail and kiosk detail pages
-- Update kiosk detail page to replace "Contact Vendor" register link with real contact buttons
-
-### Step 6: Favorites System
-
-**New route `/favorites`** -- grid of saved listings for authenticated users
-- Heart icon on listing cards and detail page
-- Add "Saved" link to Navbar for logged-in users
-
-### Step 7: Kiosk Detail Enhancement
-
-- Update `/kiosk/$slug` to show the kiosk's actual listings grid (Products tab, Services tab)
-- Fix hydration error (stable date formatting)
-- Add WhatsApp/Call buttons to vendor sidebar
-
-### Step 8: Seller Public Profile
-
-**New route `/seller/$id`:**
-- Display name, avatar, member since, region, verification badge
-- Active listings count
-- Grid of their active listings, links to their kiosks
-
-### Step 9: Cleanup
-
-- Delete `product.$handle.tsx` (allwhere leftover)
-- Update Navbar with "Saved" link for authenticated users
-- Save updated architecture to project memory
+### 5. Improve mobile menu hierarchy (per Phase 1 spec Section 7)
+Current mobile menu is a flat list. Restructure to:
+- Navigation links (Home, Discover, Saved) -- grouped at top
+- Visual divider
+- Action links (Dashboard / Start Selling)
+- Auth CTAs at bottom as full-width buttons
 
 ---
 
-## Technical Details
+## Landing Page Fixes
 
-**New files:**
-- `src/routes/listing.$slug.tsx`
-- `src/routes/dashboard.create-listing.tsx`
-- `src/routes/dashboard.edit-listing.$id.tsx`
-- `src/routes/favorites.tsx`
-- `src/routes/seller.$id.tsx`
-- Migration SQL file
+### 6. Update Hero CTA
+Change "BROWSE KIOSKS" to "Browse Listings" -- the platform is now listing-centric (Jiji/Tonaton model).
 
-**Modified files:**
-- `src/routes/discover.tsx` -- listing-centric tabs, new filters
-- `src/routes/kiosk.$slug.tsx` -- listings grid, contact buttons, hydration fix
-- `src/routes/dashboard.index.tsx` -- listings tab
-- `src/components/Navbar.tsx` -- Saved link
-- `src/lib/constants.ts` -- WhatsApp/Call helpers, condition labels
+### 7. Replace hero image
+Current image is from allwhere CDN (`cdn.prod.website-files.com`). Replace with a simple CSS-gradient illustration or abstract SVG pattern relevant to a Ghana marketplace.
 
-**Deleted files:**
-- `src/routes/product.$handle.tsx`
+### 8. CategoryShowcase -- pass category to discover
+Currently links to `/discover` without params. Update to pass `?category=electronics` (using slug). The discover page must also read this URL param.
 
-**Storage:** Reuse existing `kiosk-images` bucket for listing images.
+### 9. VendorSpotlight CTA
+Update "VIEW ALL VENDORS" link to navigate to `/discover` with the kiosks tab selected.
 
-**What is NOT in scope (deferred to FastAPI migration per specs):**
-- In-app chat (Socket.io)
-- Orders and transactions
-- BluPay escrow and payments
-- Disputes and admin console
-- Celery background jobs
+---
+
+## Discover Page Fixes (390px mobile)
+
+### 10. Mobile filter UX improvements
+At 390px, three dropdowns stack vertically consuming half the viewport. Fix:
+- Search bar stays full-width
+- Category + Region in a horizontally scrollable row on mobile
+- Listing filters (condition chips, price range, sort) behind a collapsible "Filters" toggle on mobile
+- Reduce grid gap from `gap-4` to `gap-3` and horizontal padding from `px-6` to `px-4` on mobile
+
+### 11. Search debounce
+Add 300ms debounce before firing `fetchListings`/`fetchKiosks` on filter changes.
+
+### 12. Accept category from URL search params
+When arriving from CategoryShowcase, read `?category=slug` from URL and pre-select the matching category filter.
+
+---
+
+## Listing Detail Fixes
+
+### 13. Add seller profile link
+Currently only shows "View Kiosk" button in seller card. Add "View Seller Profile" link below it, linking to `/seller/$id` using `listing.kiosks.owner_id`.
+
+### 14. Fallback contact when no phone
+When kiosk has no phone number, show: "Visit the kiosk page to contact this seller" with a link to `/kiosk/$slug` instead of an empty space.
+
+---
+
+## Kiosk Detail Fixes
+
+### 15. Show vendor display_name in sidebar
+Currently shows `kiosk.name` as the vendor identity. Fetch the owner's profile (`profiles.display_name` via `owner_id`) and display it in the vendor card.
+
+### 16. "Add Listing" button for kiosk owners
+When the logged-in user is the kiosk's `owner_id`, show an "Add Listing" floating button or inline button that links to `/dashboard/create-listing`.
+
+---
+
+## Dashboard and Post-Action Redirects
+
+### 17. Redirect after listing creation to kiosk page
+Currently redirects to `/dashboard`. Change to redirect to `/kiosk/$slug` (the kiosk the listing was added to) so the vendor sees their new listing in context.
+
+---
+
+## Profile Page Fixes
+
+### 18. Add "Become a Vendor" link for non-vendors
+Per spec: profile menu should include "Become a Vendor" for customers. Add a card or link in the profile page linking to `/become-vendor` when the user is not a vendor.
+
+---
+
+## Auth Flow Redirect Fix
+
+### 19. Redirect to /discover after login/register
+Currently both `login.tsx` and `register.tsx` redirect to `/` on success. Per Phase 1 spec: "Auto-login and redirect to Discovery feed." Change redirect target to `/discover`.
+
+---
+
+## Technical Summary
+
+**Delete 5 files:** CartDrawer, cartStore, shopify.ts, useCartSync, FeaturedProducts
+
+**Create 1 file:** `src/components/landing/FeaturedListings.tsx`
+
+**Modify 11 files:**
+- `__root.tsx` -- remove useCartSync
+- `index.tsx` -- swap FeaturedProducts for FeaturedListings
+- `Navbar.tsx` -- remove CartDrawer, restructure mobile menu
+- `HeroSection.tsx` -- update CTA text and hero image
+- `CategoryShowcase.tsx` -- pass category search param
+- `discover.tsx` -- URL search params, mobile filter UX, debounce
+- `listing.$slug.tsx` -- seller profile link, fallback contact
+- `kiosk.$slug.tsx` -- owner profile name, owner "Add Listing" button
+- `dashboard.create-listing.tsx` -- redirect to kiosk page
+- `profile.tsx` -- become-vendor link for non-vendors
+- `login.tsx` -- redirect to /discover
+
+**No database changes required.**
+
+**Deferred (FastAPI migration per specs):**
+- In-app chat (Socket.io/WebSocket)
+- Orders, transactions, escrow (BluPay)
+- Admin console and disputes
+- Bottom navigation bar (requires chat + orders tabs)
+- Push notifications, read receipts, typing indicators
 
