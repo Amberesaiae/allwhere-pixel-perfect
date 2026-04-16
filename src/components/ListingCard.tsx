@@ -1,6 +1,8 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Heart, MessageCircle, MapPin, Tag, ShieldCheck } from "lucide-react";
 import { formatPrice, timeAgo, getWhatsAppUrl } from "@/lib/constants";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 type Listing = {
   id: string;
@@ -51,10 +53,18 @@ export default function ListingCard({ listing, variant = "grid", isFavorited, on
   const img = listing.listing_images?.[0]?.image_url;
   const phone = listing.kiosks?.phone;
   const verified = listing.kiosks?.is_verified;
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const handleFav = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!isAuthenticated) {
+      toast("Sign in to save listings", {
+        action: { label: "Sign in", onClick: () => navigate({ to: "/login", search: { redirect: `/listing/${listing.slug}` } }) },
+      });
+      return;
+    }
     onToggleFavorite?.();
   };
 

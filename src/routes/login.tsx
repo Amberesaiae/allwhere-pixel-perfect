@@ -1,15 +1,23 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { z } from "zod";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
 import { lovable } from "@/integrations/lovable/index";
 import { useState, useEffect, type FormEvent } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+
+const loginSearchSchema = z.object({
+  redirect: fallback(z.string(), "").default(""),
+});
 
 export const Route = createFileRoute("/login")({
+  validateSearch: zodValidator(loginSearchSchema),
   head: () => ({
     meta: [
-      { title: "Log In | BlueKiosk" },
-      { name: "description", content: "Log in to your BlueKiosk account." },
+      { title: "Log in · bluekiosk" },
+      { name: "description", content: "Log in to your bluekiosk account." },
     ],
   }),
   component: LoginPage,
@@ -18,6 +26,7 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const { signIn, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { redirect } = useSearch({ from: "/login" });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -25,8 +34,17 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
+  const goAfterLogin = () => {
+    if (redirect && redirect.startsWith("/")) {
+      window.location.href = redirect;
+    } else {
+      navigate({ to: "/discover", search: { tab: "listings", category: "", q: "" } });
+    }
+  };
+
   useEffect(() => {
-    if (isAuthenticated) navigate({ to: "/discover" });
+    if (isAuthenticated) goAfterLogin();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
   if (isAuthenticated) return null;
@@ -39,7 +57,8 @@ function LoginPage() {
     if (err) {
       setError(err.message);
     } else {
-      navigate({ to: "/discover" });
+      toast.success("Welcome back");
+      goAfterLogin();
     }
     setLoading(false);
   };
@@ -57,7 +76,7 @@ function LoginPage() {
         return;
       }
       if (result.redirected) return;
-      navigate({ to: "/discover" });
+      goAfterLogin();
     } catch (err) {
       setError("Google sign-in failed. Please try again.");
     }
@@ -71,7 +90,7 @@ function LoginPage() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-[28px] font-bold text-bk-dark">Welcome back</h1>
-            <p className="text-bk-muted mt-1">Log in to your BlueKiosk account</p>
+            <p className="text-bk-muted mt-1">Log in to your bluekiosk account</p>
           </div>
 
           <div className="bg-white rounded-2xl p-8 border border-bk-beige space-y-5">

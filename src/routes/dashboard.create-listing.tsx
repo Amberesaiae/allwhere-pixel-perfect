@@ -5,15 +5,17 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { Loader2, ArrowLeft, ArrowRight, Upload, X, ImageIcon } from "lucide-react";
+import { Loader2, ArrowLeft, ArrowRight, Upload, X } from "lucide-react";
 import { GHANA_REGIONS, CONDITION_LABELS } from "@/lib/constants";
 import type { Tables } from "@/integrations/supabase/types";
+import StepProgress from "@/components/StepProgress";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/create-listing")({
   head: () => ({
     meta: [
-      { title: "Create Listing | BlueKiosk" },
-      { name: "description", content: "Post a new item or service on BlueKiosk." },
+      { title: "Create listing · bluekiosk" },
+      { name: "description", content: "Post a new item or service on bluekiosk." },
     ],
   }),
   component: CreateListingPage,
@@ -139,6 +141,7 @@ function CreateListingPage() {
     }
 
     const targetKiosk = kiosks.find((k) => k.id === form.kiosk_id);
+    toast.success("Listing published");
     navigate({ to: "/kiosk/$slug", params: { slug: targetKiosk?.slug || "" } });
   };
 
@@ -166,10 +169,12 @@ function CreateListingPage() {
             <ArrowLeft className="w-4 h-4" /> Back to Dashboard
           </button>
 
-          <h1 className="text-[28px] font-bold text-bk-dark mb-2">Create Listing</h1>
-          <p className="text-[14px] text-bk-muted mb-8">Post an item or service for sale</p>
+          <h1 className="text-[28px] font-bold text-bk-dark mb-2">Create listing</h1>
+          <p className="text-[14px] text-bk-muted mb-6">Post an item or service for sale</p>
 
-          {/* Step indicators */}
+          <StepProgress steps={["Basic info", "Pricing", "Images"]} current={step} />
+
+          {/* Mini progress bars */}
           <div className="flex items-center gap-2 mb-8">
             {[1, 2, 3].map((s) => (
               <div key={s} className={`flex-1 h-1.5 rounded-full ${step >= s ? "bg-bk-dark" : "bg-bk-beige"}`} />

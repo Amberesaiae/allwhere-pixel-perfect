@@ -1,15 +1,22 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { z } from "zod";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
 import { lovable } from "@/integrations/lovable/index";
 import { useState, useEffect, type FormEvent } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
+const registerSearchSchema = z.object({
+  redirect: fallback(z.string(), "").default(""),
+});
+
 export const Route = createFileRoute("/register")({
+  validateSearch: zodValidator(registerSearchSchema),
   head: () => ({
     meta: [
-      { title: "Sign Up | BlueKiosk" },
-      { name: "description", content: "Create your BlueKiosk account and start discovering verified vendors in Ghana." },
+      { title: "Sign up · bluekiosk" },
+      { name: "description", content: "Create your bluekiosk account and start discovering verified vendors in Ghana." },
     ],
   }),
   component: RegisterPage,
@@ -18,6 +25,7 @@ export const Route = createFileRoute("/register")({
 function RegisterPage() {
   const { signUp, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { redirect } = useSearch({ from: "/register" });
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,8 +35,17 @@ function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
+  const goAfter = () => {
+    if (redirect && redirect.startsWith("/")) {
+      window.location.href = redirect;
+    } else {
+      navigate({ to: "/discover", search: { tab: "listings", category: "", q: "" } });
+    }
+  };
+
   useEffect(() => {
-    if (isAuthenticated) navigate({ to: "/discover" });
+    if (isAuthenticated) goAfter();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
   if (isAuthenticated) return null;
@@ -46,7 +63,7 @@ function RegisterPage() {
         return;
       }
       if (result.redirected) return;
-      navigate({ to: "/discover" });
+      goAfter();
     } catch {
       setError("Google sign-in failed. Please try again.");
     }
@@ -99,7 +116,7 @@ function RegisterPage() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-[28px] font-bold text-bk-dark">Create your account</h1>
-            <p className="text-bk-muted mt-1">Join BlueKiosk as a buyer or vendor</p>
+            <p className="text-bk-muted mt-1">Join bluekiosk as a buyer or vendor</p>
           </div>
 
           <div className="bg-white rounded-2xl p-8 border border-bk-beige space-y-5">
@@ -195,7 +212,7 @@ function RegisterPage() {
               </button>
 
               <p className="text-[12px] text-bk-muted text-center">
-                By signing up, you agree to BlueKiosk's{" "}
+                By signing up, you agree to bluekiosk's{" "}
                 <Link to="/terms" className="underline hover:text-bk-dark">Terms of Service</Link>
               </p>
             </form>

@@ -1,24 +1,27 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { Search, Heart, User, Menu, X, ChevronDown, Plus } from "lucide-react";
 import { useState } from "react";
 import CategoryStrip from "@/components/CategoryStrip";
+import BrandLogo from "@/components/BrandLogo";
 
 export default function Navbar() {
   const { isAuthenticated, user, isLoading } = useAuth();
   const { isVendor, loading: rolesLoading } = useUserRoles(user?.id);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const navigate = useNavigate();
 
   const sellTo = !isAuthenticated ? "/register" : isVendor ? "/dashboard/create-listing" : "/become-vendor";
   const closeMobile = () => setMobileOpen(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const params = new URLSearchParams();
-    if (query.trim()) params.set("q", query.trim());
-    window.location.href = `/discover${params.toString() ? `?${params.toString()}` : ""}`;
+    navigate({
+      to: "/discover",
+      search: { tab: "listings", category: "", q: query.trim() },
+    });
   };
 
   return (
@@ -27,15 +30,7 @@ export default function Navbar() {
       <div className="border-b border-bk-beige">
         <div className="mx-auto max-w-[1280px] px-4 md:px-6 flex items-center gap-3 md:gap-6 h-16 md:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-bk-yellow flex items-center justify-center shadow-sm">
-              <span className="text-bk-dark font-bold text-[14px] md:text-[15px]">BK</span>
-            </div>
-            <div className="hidden sm:flex flex-col leading-tight">
-              <span className="text-[16px] md:text-[18px] font-bold text-bk-dark">BlueKiosk</span>
-              <span className="hidden md:block text-[10px] text-bk-muted -mt-0.5">Ghana's marketplace</span>
-            </div>
-          </Link>
+          <BrandLogo size={22} withTagline className="md:scale-110 md:origin-left" />
 
           {/* Search */}
           <form onSubmit={handleSearch} className="flex-1 max-w-[640px] hidden sm:block">

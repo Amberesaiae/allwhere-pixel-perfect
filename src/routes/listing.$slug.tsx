@@ -1,18 +1,23 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
-import { Loader2, ArrowLeft, MapPin, Heart, Phone, MessageCircle, Eye, ChevronLeft, ChevronRight, ShieldCheck, Tag, Share2, Star } from "lucide-react";
+import { Loader2, ArrowLeft, MapPin, Heart, Phone, MessageCircle, Eye, ChevronLeft, ChevronRight, ShieldCheck, Tag, Share2, Star, Flag } from "lucide-react";
 import { CONDITION_LABELS, formatPrice, timeAgo, getWhatsAppUrl, getCallUrl } from "@/lib/constants";
 import ListingCard from "@/components/ListingCard";
+import ShareDialog from "@/components/ShareDialog";
+import ReportDialog from "@/components/ReportDialog";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/listing/$slug")({
-  head: () => ({
+  head: ({ params }) => ({
     meta: [
-      { title: "Listing | BlueKiosk" },
-      { name: "description", content: "View listing details on BlueKiosk marketplace." },
+      { title: `Listing · bluekiosk` },
+      { name: "description", content: "View listing details on bluekiosk marketplace." },
+      { property: "og:title", content: `Listing · bluekiosk` },
+      { property: "og:description", content: "View listing details on bluekiosk marketplace." },
     ],
   }),
   component: ListingDetailPage,
@@ -23,6 +28,7 @@ type Tab = "description" | "specs" | "reviews";
 function ListingDetailPage() {
   const { slug } = Route.useParams();
   const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [listing, setListing] = useState<any>(null);
   const [images, setImages] = useState<any[]>([]);
   const [related, setRelated] = useState<any[]>([]);
@@ -32,9 +38,38 @@ function ListingDetailPage() {
   const [isFavorited, setIsFavorited] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
   const [tab, setTab] = useState<Tab>("description");
+  const [shareOpen, setShareOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   useEffect(() => { fetchListing(); }, [slug]);
   useEffect(() => { if (listing && user) checkFavorite(); }, [listing, user]);
+
+  // Update document head with cover image once loaded (client-only OG)
+  useEffect(() => {
+    if (typeof document === "undefined" || !listing) return;
+    document.title = `${listing.title} · bluekiosk`;
+    const cover = images?.[0]?.image_url;
+    const set = (sel: string, attr: string, val: string) => {
+      let el = document.querySelector(sel) as HTMLMetaElement | null;
+      if (!el) {
+        el = document.createElement("meta");
+        const [k, v] = sel.replace(/[\[\]"]/g, "").split("=");
+        el.setAttribute(k, v);
+        document.head.appendChild(el);
+      }
+      el.setAttribute(attr, val);
+    };
+    if (cover) {
+      set('meta[property="og:image"]', "content", cover);
+      set('meta[name="twitter:image"]', "content", cover);
+      set('meta[name="twitter:card"]', "content", "summary_large_image");
+    }
+    set('meta[property="og:title"]', "content", `${listing.title} · bluekiosk`);
+    if (listing.description) {
+      set('meta[name="description"]', "content", listing.description.slice(0, 160));
+      set('meta[property="og:description"]', "content", listing.description.slice(0, 160));
+    }
+  }, [listing, images]);
 
   const fetchListing = async () => {
     setLoading(true);
@@ -73,6 +108,12 @@ function ListingDetailPage() {
   };
 
   const toggleFavorite = async () => {
+    if (!isAuthenticated) {
+      toast("Sign in to save", {
+        action: { label: "Sign in", onClick: () => navigate({ to: "/login", search: { redirect: `/listing/${slug}` } }) },
+      });
+      return;
+    }
     if (!user || !listing) return;
     setFavLoading(true);
     if (isFavorited) {
@@ -81,19 +122,12 @@ function ListingDetailPage() {
     } else {
       await supabase.from("favorites").insert({ user_id: user.id, listing_id: listing.id });
       setIsFavorited(true);
+      toast.success("Saved to favorites");
     }
     setFavLoading(false);
   };
 
-  const share = async () => {
-    if (typeof window === "undefined") return;
-    const url = window.location.href;
-    if (navigator.share) {
-      try { await navigator.share({ title: listing.title, url }); } catch {}
-    } else {
-      try { await navigator.clipboard.writeText(url); } catch {}
-    }
-  };
+  const share = () => setShareOpen(true);
 
   if (loading) {
     return (

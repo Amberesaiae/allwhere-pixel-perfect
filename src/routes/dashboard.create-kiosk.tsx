@@ -1,18 +1,20 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { Loader2, Upload, X } from "lucide-react";
+import { Loader2, Upload, X, CheckCircle, Plus, ExternalLink } from "lucide-react";
 import { GHANA_REGIONS } from "@/lib/constants";
 import type { Tables } from "@/integrations/supabase/types";
+import StepProgress from "@/components/StepProgress";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/create-kiosk")({
   head: () => ({
     meta: [
-      { title: "Create Kiosk | BlueKiosk" },
-      { name: "description", content: "Create a new vendor kiosk on BlueKiosk." },
+      { title: "Create kiosk · bluekiosk" },
+      { name: "description", content: "Create a new vendor kiosk on bluekiosk." },
     ],
   }),
   component: CreateKioskPage,
@@ -36,6 +38,7 @@ function CreateKioskPage() {
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [created, setCreated] = useState<{ slug: string; name: string } | null>(null);
 
   useEffect(() => {
     if (authLoading || rolesLoading) return;
@@ -119,7 +122,9 @@ function CreateKioskPage() {
       return;
     }
 
-    navigate({ to: "/dashboard" });
+    toast.success("Kiosk created");
+    setCreated({ slug, name: name.trim() });
+    setSaving(false);
   };
 
   if (authLoading || rolesLoading) {
@@ -133,13 +138,44 @@ function CreateKioskPage() {
     );
   }
 
+  if (created) {
+    return (
+      <>
+        <Navbar />
+        <main className="min-h-screen bg-bk-cream py-8">
+          <div className="mx-auto max-w-[640px] px-6">
+            <StepProgress steps={["Activate vendor", "Create kiosk", "Post listing"]} current={3} />
+            <div className="bg-white rounded-2xl border border-bk-beige p-10 text-center">
+              <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-green-600" />
+              </div>
+              <h1 className="text-[24px] font-bold text-bk-dark mb-2">"{created.name}" is live</h1>
+              <p className="text-[14px] text-bk-muted mb-6 max-w-md mx-auto">
+                Your kiosk is set up. The next step is to post your first listing so buyers can find you.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Link to="/dashboard/create-listing" className="inline-flex items-center gap-2 text-[14px] font-bold bg-bk-yellow text-bk-dark px-6 py-3 rounded-full hover:bg-bk-yellow-hover transition">
+                  <Plus className="w-4 h-4" /> Post your first listing
+                </Link>
+                <Link to="/kiosk/$slug" params={{ slug: created.slug }} className="inline-flex items-center gap-2 text-[14px] font-semibold border border-bk-beige text-bk-dark px-5 py-2.5 rounded-full hover:bg-bk-page transition">
+                  <ExternalLink className="w-4 h-4" /> View public page
+                </Link>
+              </div>
+            </div>
+          </div>
+        </main>
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar />
       <main className="min-h-screen bg-bk-cream py-8">
         <div className="mx-auto max-w-[640px] px-6">
-          <h1 className="text-[28px] font-bold text-bk-dark mb-2">Create a Kiosk</h1>
-          <p className="text-[14px] text-bk-muted mb-8">Set up your storefront on BlueKiosk</p>
+          <StepProgress steps={["Activate vendor", "Create kiosk", "Post listing"]} current={2} />
+          <h1 className="text-[28px] font-bold text-bk-dark mb-2">Create a kiosk</h1>
+          <p className="text-[14px] text-bk-muted mb-8">Set up your storefront on bluekiosk</p>
 
           <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-bk-beige p-8 space-y-6">
             {error && (
