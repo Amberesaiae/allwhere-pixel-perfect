@@ -55,6 +55,10 @@
   --color-bk-dark: var(--bk-dark);
   --color-bk-muted: var(--bk-muted);
   --color-bk-footer: var(--bk-footer);
+  --color-bk-page: var(--bk-page);
+  --color-bk-orange: var(--bk-orange);
+  --color-bk-orange-hover: var(--bk-orange-hover);
+  --color-bk-red: var(--bk-red);
   --font-heading: var(--font-heading);
   --font-body: var(--font-body);
 }
