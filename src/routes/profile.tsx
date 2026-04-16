@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { Loader2, User, MapPin, Phone, LogOut } from "lucide-react";
+import { Loader2, User, MapPin, Phone, LogOut, Store } from "lucide-react";
 import { GHANA_REGIONS } from "@/lib/constants";
 
 export const Route = createFileRoute("/profile")({
@@ -28,6 +28,7 @@ interface Profile {
 
 function ProfilePage() {
   const { user, isLoading: authLoading, isAuthenticated, signOut } = useAuth();
+  const { isVendor, loading: rolesLoading } = useUserRoles(user?.id);
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
