@@ -33,7 +33,7 @@ const vendors = [
 export default function VendorSpotlight() {
   return (
     <section className="bg-bk-beige py-16 md:py-24">
-      <div className="mx-auto max-w-[1280px] px-6">
+      <div className="mx-auto max-w-[1280px] px-4 md:px-6">
         <div className="text-center mb-14">
           <h2 className="text-[36px] md:text-[48px] font-bold text-bk-dark tracking-tight mb-4">
             Featured Vendors
@@ -42,9 +42,9 @@ export default function VendorSpotlight() {
             Meet some of Ghana's top-rated vendors already thriving on BlueKiosk
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {vendors.map((v) => (
-            <div key={v.name} className="bg-bk-cream rounded-2xl p-8 hover:shadow-lg transition">
+            <div key={v.name} className="bg-bk-cream rounded-2xl p-6 md:p-8 hover:shadow-lg transition">
               <div className="flex items-center gap-4 mb-5">
                 <img
                   src={v.avatar}
@@ -74,9 +74,10 @@ export default function VendorSpotlight() {
         <div className="text-center mt-10">
           <Link
             to="/discover"
+            search={{ tab: "kiosks" }}
             className="inline-block text-[15px] font-semibold text-bk-dark bg-bk-yellow px-8 py-4 rounded-full hover:bg-bk-yellow-hover transition"
           >
-            VIEW ALL VENDORS
+            View All Vendors
           </Link>
         </div>
       </div>

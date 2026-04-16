@@ -8,7 +8,7 @@ import BenefitsSection from "@/components/landing/BenefitsSection";
 import CategoryShowcase from "@/components/landing/CategoryShowcase";
 import HowItWorks from "@/components/landing/HowItWorks";
 import VendorSpotlight from "@/components/landing/VendorSpotlight";
-import FeaturedProducts from "@/components/landing/FeaturedProducts";
+import FeaturedListings from "@/components/landing/FeaturedListings";
 import Testimonials from "@/components/landing/Testimonials";
 import FAQSection from "@/components/landing/FAQSection";
 import BottomCTA from "@/components/landing/BottomCTA";
@@ -39,7 +39,7 @@ function LandingPage() {
       <CategoryShowcase />
       <HowItWorks />
       <VendorSpotlight />
-      <FeaturedProducts />
+      <FeaturedListings />
       <Testimonials />
       <FAQSection />
       <BottomCTA />
