@@ -138,7 +138,8 @@ function CreateListingPage() {
       }
     }
 
-    navigate({ to: "/dashboard" });
+    const targetKiosk = kiosks.find((k) => k.id === form.kiosk_id);
+    navigate({ to: "/kiosk/$slug", params: { slug: targetKiosk?.slug || "" } });
   };
 
   if (authLoading || rolesLoading) {

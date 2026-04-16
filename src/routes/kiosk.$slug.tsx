@@ -246,7 +246,7 @@ function KioskDetailPage() {
                       {kiosk.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-[15px] font-bold text-bk-dark">{kiosk.name}</p>
+                      <p className="text-[15px] font-bold text-bk-dark">{ownerName || kiosk.name}</p>
                       {memberDate && <p className="text-[12px] text-bk-muted">Member since {memberDate}</p>}
                     </div>
                   </div>

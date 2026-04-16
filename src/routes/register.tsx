@@ -28,7 +28,7 @@ function RegisterPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated) navigate({ to: "/" });
+    if (isAuthenticated) navigate({ to: "/discover" });
   }, [isAuthenticated]);
 
   if (isAuthenticated) return null;
@@ -46,7 +46,7 @@ function RegisterPage() {
         return;
       }
       if (result.redirected) return;
-      navigate({ to: "/" });
+      navigate({ to: "/discover" });
     } catch {
       setError("Google sign-in failed. Please try again.");
     }
