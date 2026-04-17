@@ -154,8 +154,28 @@ function KioskDetailPage() {
     if (navigator.share) {
       try { await navigator.share({ title: kiosk.name, url }); } catch {}
     } else {
-      try { await navigator.clipboard.writeText(url); } catch {}
+      try { await navigator.clipboard.writeText(url); toast.success("Link copied"); } catch {}
     }
+  };
+
+  const toggleFav = async () => {
+    if (!isAuthenticated) {
+      toast("Sign in to save kiosks", {
+        action: { label: "Sign in", onClick: () => navigate({ to: "/login", search: { redirect: `/kiosk/${slug}` } }) },
+      });
+      return;
+    }
+    if (!user || !kiosk) return;
+    setFavLoading(true);
+    if (isFav) {
+      await supabase.from("kiosk_favorites").delete().eq("user_id", user.id).eq("kiosk_id", kiosk.id);
+      setIsFav(false);
+    } else {
+      await supabase.from("kiosk_favorites").insert({ user_id: user.id, kiosk_id: kiosk.id });
+      setIsFav(true);
+      toast.success("Kiosk saved");
+    }
+    setFavLoading(false);
   };
 
   return (
