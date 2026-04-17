@@ -214,7 +214,16 @@ function KioskDetailPage() {
             ) : (
               <span className="flex-1 text-center text-[13px] text-bk-muted py-2">Contact details not provided</span>
             )}
-            <button onClick={share} className="inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold border border-bk-beige text-bk-dark px-4 py-2 rounded-full hover:bg-bk-page transition">
+            <button
+              onClick={toggleFav}
+              disabled={favLoading}
+              className="inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold border border-bk-beige text-bk-dark px-3 py-2 rounded-full hover:bg-bk-page transition disabled:opacity-50"
+              title={isFav ? "Saved" : "Save kiosk"}
+            >
+              <Heart className={`w-4 h-4 ${isFav ? "fill-bk-red text-bk-red" : ""}`} />
+              <span className="hidden sm:inline">{isFav ? "Saved" : "Save"}</span>
+            </button>
+            <button onClick={share} className="inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold border border-bk-beige text-bk-dark px-3 py-2 rounded-full hover:bg-bk-page transition">
               <Share2 className="w-4 h-4" /> <span className="hidden sm:inline">Share</span>
             </button>
           </div>
@@ -311,9 +320,24 @@ function KioskDetailPage() {
                   </div>
                 </div>
               )}
+
+              {/* Report kiosk */}
+              <div className="mt-8">
+                <button onClick={() => setReportOpen(true)} className="inline-flex items-center gap-1.5 text-[12px] text-bk-muted hover:text-bk-red transition">
+                  <Flag className="w-3.5 h-3.5" /> Report this kiosk
+                </button>
+              </div>
             </div>
           </div>
         </div>
+
+        <ReportDialog
+          open={reportOpen}
+          onClose={() => setReportOpen(false)}
+          subject={kiosk.name}
+          targetType="kiosk"
+          targetId={kiosk.id}
+        />
       </main>
       <Footer />
     </>
