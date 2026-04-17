@@ -11,8 +11,8 @@ import { GHANA_REGIONS } from "@/lib/constants";
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Profile | BlueKiosk" },
-      { name: "description", content: "Manage your BlueKiosk profile." },
+      { title: "Profile · bluekiosk" },
+      { name: "description", content: "Manage your bluekiosk profile." },
     ],
   }),
   component: ProfilePage,

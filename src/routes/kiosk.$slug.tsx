@@ -1,20 +1,24 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
-import { MapPin, ShieldCheck, Eye, Phone, ArrowLeft, Loader2, MessageCircle, Tag, Plus, Share2, Store } from "lucide-react";
+import { MapPin, ShieldCheck, Eye, Phone, ArrowLeft, Loader2, MessageCircle, Tag, Plus, Share2, Store, Heart, Flag } from "lucide-react";
 import { getCategoryIcon, getWhatsAppUrl, getCallUrl } from "@/lib/constants";
 import type { Tables } from "@/integrations/supabase/types";
 import ListingCard from "@/components/ListingCard";
 import KioskCard from "@/components/KioskCard";
+import ReportDialog from "@/components/ReportDialog";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/kiosk/$slug")({
   head: () => ({
     meta: [
-      { title: "Kiosk | BlueKiosk" },
-      { name: "description", content: "View vendor kiosk details on BlueKiosk." },
+      { title: "Kiosk · bluekiosk" },
+      { name: "description", content: "View vendor kiosk details on bluekiosk." },
+      { property: "og:title", content: "Kiosk · bluekiosk" },
+      { property: "og:description", content: "View vendor kiosk details on bluekiosk." },
     ],
   }),
   component: KioskDetailPage,
@@ -27,7 +31,8 @@ type KioskDetail = Tables<"kiosks"> & {
 
 function KioskDetailPage() {
   const { slug } = Route.useParams();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [kiosk, setKiosk] = useState<KioskDetail | null>(null);
   const [listings, setListings] = useState<any[]>([]);
   const [related, setRelated] = useState<any[]>([]);
@@ -36,8 +41,41 @@ function KioskDetailPage() {
   const [listingTab, setListingTab] = useState<"all" | "products" | "services">("all");
   const [memberDate, setMemberDate] = useState("");
   const [ownerName, setOwnerName] = useState("");
+  const [isFav, setIsFav] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   useEffect(() => { fetchKiosk(); }, [slug]);
+  useEffect(() => {
+    if (!kiosk || !user) return;
+    supabase.from("kiosk_favorites").select("id").eq("user_id", user.id).eq("kiosk_id", kiosk.id).maybeSingle().then(({ data }) => setIsFav(!!data));
+  }, [kiosk, user]);
+
+  // Update OG meta with kiosk cover image client-side
+  useEffect(() => {
+    if (typeof document === "undefined" || !kiosk) return;
+    document.title = `${kiosk.name} · bluekiosk`;
+    const set = (sel: string, attr: string, val: string) => {
+      let el = document.querySelector(sel) as HTMLMetaElement | null;
+      if (!el) {
+        el = document.createElement("meta");
+        const [k, v] = sel.replace(/[\[\]"]/g, "").split("=");
+        el.setAttribute(k, v);
+        document.head.appendChild(el);
+      }
+      el.setAttribute(attr, val);
+    };
+    if (kiosk.cover_image_url) {
+      set('meta[property="og:image"]', "content", kiosk.cover_image_url);
+      set('meta[name="twitter:image"]', "content", kiosk.cover_image_url);
+      set('meta[name="twitter:card"]', "content", "summary_large_image");
+    }
+    set('meta[property="og:title"]', "content", `${kiosk.name} · bluekiosk`);
+    if (kiosk.description) {
+      set('meta[name="description"]', "content", kiosk.description.slice(0, 160));
+      set('meta[property="og:description"]', "content", kiosk.description.slice(0, 160));
+    }
+  }, [kiosk]);
 
   const fetchKiosk = async () => {
     setLoading(true);
@@ -116,8 +154,28 @@ function KioskDetailPage() {
     if (navigator.share) {
       try { await navigator.share({ title: kiosk.name, url }); } catch {}
     } else {
-      try { await navigator.clipboard.writeText(url); } catch {}
+      try { await navigator.clipboard.writeText(url); toast.success("Link copied"); } catch {}
     }
+  };
+
+  const toggleFav = async () => {
+    if (!isAuthenticated) {
+      toast("Sign in to save kiosks", {
+        action: { label: "Sign in", onClick: () => navigate({ to: "/login", search: { redirect: `/kiosk/${slug}` } }) },
+      });
+      return;
+    }
+    if (!user || !kiosk) return;
+    setFavLoading(true);
+    if (isFav) {
+      await supabase.from("kiosk_favorites").delete().eq("user_id", user.id).eq("kiosk_id", kiosk.id);
+      setIsFav(false);
+    } else {
+      await supabase.from("kiosk_favorites").insert({ user_id: user.id, kiosk_id: kiosk.id });
+      setIsFav(true);
+      toast.success("Kiosk saved");
+    }
+    setFavLoading(false);
   };
 
   return (
@@ -176,7 +234,16 @@ function KioskDetailPage() {
             ) : (
               <span className="flex-1 text-center text-[13px] text-bk-muted py-2">Contact details not provided</span>
             )}
-            <button onClick={share} className="inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold border border-bk-beige text-bk-dark px-4 py-2 rounded-full hover:bg-bk-page transition">
+            <button
+              onClick={toggleFav}
+              disabled={favLoading}
+              className="inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold border border-bk-beige text-bk-dark px-3 py-2 rounded-full hover:bg-bk-page transition disabled:opacity-50"
+              title={isFav ? "Saved" : "Save kiosk"}
+            >
+              <Heart className={`w-4 h-4 ${isFav ? "fill-bk-red text-bk-red" : ""}`} />
+              <span className="hidden sm:inline">{isFav ? "Saved" : "Save"}</span>
+            </button>
+            <button onClick={share} className="inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold border border-bk-beige text-bk-dark px-3 py-2 rounded-full hover:bg-bk-page transition">
               <Share2 className="w-4 h-4" /> <span className="hidden sm:inline">Share</span>
             </button>
           </div>
@@ -273,9 +340,24 @@ function KioskDetailPage() {
                   </div>
                 </div>
               )}
+
+              {/* Report kiosk */}
+              <div className="mt-8">
+                <button onClick={() => setReportOpen(true)} className="inline-flex items-center gap-1.5 text-[12px] text-bk-muted hover:text-bk-red transition">
+                  <Flag className="w-3.5 h-3.5" /> Report this kiosk
+                </button>
+              </div>
             </div>
           </div>
         </div>
+
+        <ReportDialog
+          open={reportOpen}
+          onClose={() => setReportOpen(false)}
+          subject={kiosk.name}
+          targetType="kiosk"
+          targetId={kiosk.id}
+        />
       </main>
       <Footer />
     </>

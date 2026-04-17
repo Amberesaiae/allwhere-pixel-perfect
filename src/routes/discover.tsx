@@ -21,9 +21,9 @@ export const Route = createFileRoute("/discover")({
   validateSearch: zodValidator(discoverSearchSchema),
   head: () => ({
     meta: [
-      { title: "Discover Listings & Kiosks | BlueKiosk" },
+      { title: "Discover · bluekiosk" },
       { name: "description", content: "Browse listings and verified vendors near you in Ghana." },
-      { property: "og:title", content: "Discover | BlueKiosk" },
+      { property: "og:title", content: "Discover · bluekiosk" },
       { property: "og:description", content: "Browse listings and verified vendors across Ghana." },
     ],
   }),
@@ -318,9 +318,24 @@ function DiscoverPage() {
               {loading ? (
                 <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-bk-muted" /></div>
               ) : pageItems.length === 0 ? (
-                <div className="bg-white rounded-2xl border border-bk-beige p-12 text-center">
-                  <p className="text-[16px] text-bk-dark font-semibold mb-1">No {tab} found</p>
-                  <p className="text-[14px] text-bk-muted">Try adjusting your filters or check back soon.</p>
+                <div className="bg-white rounded-2xl border border-bk-beige p-10 md:p-12 text-center">
+                  <div className="w-14 h-14 rounded-full bg-bk-page flex items-center justify-center mx-auto mb-4">
+                    <Search className="w-7 h-7 text-bk-muted" />
+                  </div>
+                  <h3 className="text-[18px] font-bold text-bk-dark mb-1.5">
+                    {dSearch ? `No ${tab} match "${dSearch}"` : `No ${tab} found`}
+                  </h3>
+                  <p className="text-[14px] text-bk-muted max-w-md mx-auto mb-6">
+                    Try adjusting your filters, search for something else, or browse popular categories.
+                  </p>
+                  <div className="flex flex-wrap items-center justify-center gap-3">
+                    <button onClick={() => { clearFilters(); setSearch(""); }} className="text-[13px] font-semibold bg-bk-yellow text-bk-dark px-5 py-2.5 rounded-full hover:bg-bk-yellow-hover transition">
+                      Clear filters
+                    </button>
+                    <Link to="/" className="text-[13px] font-semibold border border-bk-beige text-bk-dark px-5 py-2.5 rounded-full hover:bg-bk-page transition">
+                      Browse categories
+                    </Link>
+                  </div>
                 </div>
               ) : tab === "listings" ? (
                 view === "grid" ? (
@@ -361,13 +376,22 @@ function DiscoverPage() {
         {filtersOpen && (
           <div className="fixed inset-0 z-50 lg:hidden">
             <div className="absolute inset-0 bg-bk-dark/50" onClick={() => setFiltersOpen(false)} />
-            <div className="absolute bottom-0 inset-x-0 bg-bk-page rounded-t-2xl max-h-[85vh] overflow-y-auto p-5">
-              <div className="flex items-center justify-between mb-4">
+            <div className="absolute bottom-0 inset-x-0 bg-bk-page rounded-t-2xl max-h-[85vh] flex flex-col">
+              <div className="flex items-center justify-between p-5 pb-3 border-b border-bk-beige bg-bk-page sticky top-0 z-10">
                 <h3 className="text-[18px] font-bold text-bk-dark">Filters</h3>
                 <button onClick={() => setFiltersOpen(false)} className="w-9 h-9 rounded-full bg-white border border-bk-beige flex items-center justify-center"><X className="w-4 h-4" /></button>
               </div>
-              <Sidebar />
-              <button onClick={() => setFiltersOpen(false)} className="w-full mt-4 bg-bk-yellow text-bk-dark py-3 rounded-full font-bold">Apply filters</button>
+              <div className="flex-1 overflow-y-auto p-5 pt-4 pb-24">
+                <Sidebar />
+              </div>
+              <div className="sticky bottom-0 inset-x-0 bg-white border-t border-bk-beige p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+                <button
+                  onClick={() => setFiltersOpen(false)}
+                  className="w-full bg-bk-yellow text-bk-dark py-3 rounded-full font-bold text-[14px] hover:bg-bk-yellow-hover transition"
+                >
+                  Apply ({items.length} {items.length === 1 ? "result" : "results"})
+                </button>
+              </div>
             </div>
           </div>
         )}

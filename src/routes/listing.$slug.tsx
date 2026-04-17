@@ -14,9 +14,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/listing/$slug")({
   head: ({ params }) => ({
     meta: [
-      { title: `Listing · bluekiosk` },
+      { title: "Listing · bluekiosk" },
       { name: "description", content: "View listing details on bluekiosk marketplace." },
-      { property: "og:title", content: `Listing · bluekiosk` },
+      { property: "og:title", content: "Listing · bluekiosk" },
       { property: "og:description", content: "View listing details on bluekiosk marketplace." },
     ],
   }),
@@ -375,6 +375,29 @@ function ListingDetailPage() {
               </div>
             </div>
           )}
+        </div>
+        <ShareDialog
+          open={shareOpen}
+          onClose={() => setShareOpen(false)}
+          title={listing.title}
+          url={typeof window !== "undefined" ? window.location.href : ""}
+        />
+        <ReportDialog
+          open={reportOpen}
+          onClose={() => setReportOpen(false)}
+          subject={listing.title}
+          targetType="listing"
+          targetId={listing.id}
+        />
+
+        {/* Floating report link */}
+        <div className="mx-auto max-w-[1280px] px-4 md:px-6 mt-8">
+          <button
+            onClick={() => setReportOpen(true)}
+            className="inline-flex items-center gap-1.5 text-[12px] text-bk-muted hover:text-bk-red transition"
+          >
+            <Flag className="w-3.5 h-3.5" /> Report this listing
+          </button>
         </div>
       </main>
       <Footer />
