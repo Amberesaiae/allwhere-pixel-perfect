@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { X, Flag } from "lucide-react";
+import { X, Flag, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  subject: string; // e.g. listing or kiosk title
-  url: string;
+  subject: string;
+  targetType: "listing" | "kiosk";
+  targetId: string;
 }
 
 const REASONS = [
@@ -17,16 +21,31 @@ const REASONS = [
   "Other",
 ];
 
-export default function ReportDialog({ open, onClose, subject, url }: Props) {
+export default function ReportDialog({ open, onClose, subject, targetType, targetId }: Props) {
+  const { user } = useAuth();
   const [reason, setReason] = useState(REASONS[0]);
   const [details, setDetails] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   if (!open) return null;
 
-  const mailto = `mailto:abuse@bluekiosk.com?subject=${encodeURIComponent(
-    `Report: ${subject}`
-  )}&body=${encodeURIComponent(
-    `Reason: ${reason}\n\nURL: ${url}\n\nAdditional details:\n${details}`
-  )}`;
+  const submit = async () => {
+    setSubmitting(true);
+    const { error } = await supabase.from("reports").insert({
+      reporter_id: user?.id ?? null,
+      target_type: targetType,
+      target_id: targetId,
+      reason,
+      details: details || null,
+    });
+    setSubmitting(false);
+    if (error) {
+      toast.error("Could not submit report. Please try again.");
+      return;
+    }
+    toast.success("Report submitted. Thank you for keeping bluekiosk safe.");
+    setDetails("");
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -49,9 +68,7 @@ export default function ReportDialog({ open, onClose, subject, url }: Props) {
           className="w-full px-3 py-2.5 rounded-xl border border-bk-beige bg-bk-page text-bk-dark text-[14px] mb-4 focus:outline-none focus:ring-2 focus:ring-bk-yellow"
         >
           {REASONS.map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
+            <option key={r} value={r}>{r}</option>
           ))}
         </select>
 
@@ -65,16 +82,17 @@ export default function ReportDialog({ open, onClose, subject, url }: Props) {
         />
 
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 text-[13px] font-semibold border border-bk-beige text-bk-dark py-2.5 rounded-full hover:bg-bk-page transition">
+          <button onClick={onClose} disabled={submitting} className="flex-1 text-[13px] font-semibold border border-bk-beige text-bk-dark py-2.5 rounded-full hover:bg-bk-page transition disabled:opacity-50">
             Cancel
           </button>
-          <a
-            href={mailto}
-            onClick={onClose}
-            className="flex-1 text-center text-[13px] font-bold bg-bk-yellow text-bk-dark py-2.5 rounded-full hover:bg-bk-yellow-hover transition"
+          <button
+            onClick={submit}
+            disabled={submitting}
+            className="flex-1 inline-flex items-center justify-center gap-2 text-[13px] font-bold bg-bk-yellow text-bk-dark py-2.5 rounded-full hover:bg-bk-yellow-hover transition disabled:opacity-50"
           >
+            {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
             Send Report
-          </a>
+          </button>
         </div>
       </div>
     </div>

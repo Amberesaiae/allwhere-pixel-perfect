@@ -13,8 +13,10 @@ import KioskCard from "@/components/KioskCard";
 export const Route = createFileRoute("/kiosk/$slug")({
   head: () => ({
     meta: [
-      { title: "Kiosk | BlueKiosk" },
-      { name: "description", content: "View vendor kiosk details on BlueKiosk." },
+      { title: "Kiosk · bluekiosk" },
+      { name: "description", content: "View vendor kiosk details on bluekiosk." },
+      { property: "og:title", content: "Kiosk · bluekiosk" },
+      { property: "og:description", content: "View vendor kiosk details on bluekiosk." },
     ],
   }),
   component: KioskDetailPage,

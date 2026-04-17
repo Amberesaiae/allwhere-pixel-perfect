@@ -12,8 +12,8 @@ import type { Tables } from "@/integrations/supabase/types";
 export const Route = createFileRoute("/dashboard/")({
   head: () => ({
     meta: [
-      { title: "Vendor Dashboard | BlueKiosk" },
-      { name: "description", content: "Manage your kiosks and listings on BlueKiosk." },
+      { title: "Dashboard · bluekiosk" },
+      { name: "description", content: "Manage your kiosks and listings on bluekiosk." },
     ],
   }),
   component: DashboardPage,

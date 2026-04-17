@@ -12,12 +12,12 @@ import VerifiedKiosksNearYou from "@/components/landing/VerifiedKiosksNearYou";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "BlueKiosk — Ghana's Trusted Marketplace" },
+      { title: "bluekiosk — Ghana's trusted marketplace" },
       {
         name: "description",
-        content: "BlueKiosk connects buyers with verified local vendors in Ghana. Discover kiosks, browse listings, and contact sellers directly via WhatsApp.",
+        content: "bluekiosk connects buyers with verified local vendors in Ghana. Discover kiosks, browse listings, and contact sellers directly via WhatsApp.",
       },
-      { property: "og:title", content: "BlueKiosk — Ghana's Trusted Marketplace" },
+      { property: "og:title", content: "bluekiosk — Ghana's trusted marketplace" },
       { property: "og:description", content: "Discover verified vendors and shop directly via WhatsApp across Ghana." },
     ],
   }),
