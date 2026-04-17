@@ -1,14 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
-import { MapPin, ShieldCheck, Eye, Phone, ArrowLeft, Loader2, MessageCircle, Tag, Plus, Share2, Store } from "lucide-react";
+import { MapPin, ShieldCheck, Eye, Phone, ArrowLeft, Loader2, MessageCircle, Tag, Plus, Share2, Store, Heart, Flag } from "lucide-react";
 import { getCategoryIcon, getWhatsAppUrl, getCallUrl } from "@/lib/constants";
 import type { Tables } from "@/integrations/supabase/types";
 import ListingCard from "@/components/ListingCard";
 import KioskCard from "@/components/KioskCard";
+import ReportDialog from "@/components/ReportDialog";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/kiosk/$slug")({
   head: () => ({
@@ -29,7 +31,8 @@ type KioskDetail = Tables<"kiosks"> & {
 
 function KioskDetailPage() {
   const { slug } = Route.useParams();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [kiosk, setKiosk] = useState<KioskDetail | null>(null);
   const [listings, setListings] = useState<any[]>([]);
   const [related, setRelated] = useState<any[]>([]);
@@ -38,8 +41,41 @@ function KioskDetailPage() {
   const [listingTab, setListingTab] = useState<"all" | "products" | "services">("all");
   const [memberDate, setMemberDate] = useState("");
   const [ownerName, setOwnerName] = useState("");
+  const [isFav, setIsFav] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   useEffect(() => { fetchKiosk(); }, [slug]);
+  useEffect(() => {
+    if (!kiosk || !user) return;
+    supabase.from("kiosk_favorites").select("id").eq("user_id", user.id).eq("kiosk_id", kiosk.id).maybeSingle().then(({ data }) => setIsFav(!!data));
+  }, [kiosk, user]);
+
+  // Update OG meta with kiosk cover image client-side
+  useEffect(() => {
+    if (typeof document === "undefined" || !kiosk) return;
+    document.title = `${kiosk.name} · bluekiosk`;
+    const set = (sel: string, attr: string, val: string) => {
+      let el = document.querySelector(sel) as HTMLMetaElement | null;
+      if (!el) {
+        el = document.createElement("meta");
+        const [k, v] = sel.replace(/[\[\]"]/g, "").split("=");
+        el.setAttribute(k, v);
+        document.head.appendChild(el);
+      }
+      el.setAttribute(attr, val);
+    };
+    if (kiosk.cover_image_url) {
+      set('meta[property="og:image"]', "content", kiosk.cover_image_url);
+      set('meta[name="twitter:image"]', "content", kiosk.cover_image_url);
+      set('meta[name="twitter:card"]', "content", "summary_large_image");
+    }
+    set('meta[property="og:title"]', "content", `${kiosk.name} · bluekiosk`);
+    if (kiosk.description) {
+      set('meta[name="description"]', "content", kiosk.description.slice(0, 160));
+      set('meta[property="og:description"]', "content", kiosk.description.slice(0, 160));
+    }
+  }, [kiosk]);
 
   const fetchKiosk = async () => {
     setLoading(true);

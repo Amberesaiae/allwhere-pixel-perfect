@@ -4,14 +4,16 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { Loader2, Heart, MapPin, Tag } from "lucide-react";
-import { formatPrice, timeAgo, CONDITION_LABELS } from "@/lib/constants";
+import { Loader2, Heart, Store, Tag } from "lucide-react";
+import ListingCard from "@/components/ListingCard";
+import KioskCard from "@/components/KioskCard";
+import EmptyState from "@/components/EmptyState";
 
 export const Route = createFileRoute("/favorites")({
   head: () => ({
     meta: [
-      { title: "Saved Listings | BlueKiosk" },
-      { name: "description", content: "Your saved listings on BlueKiosk." },
+      { title: "Saved · bluekiosk" },
+      { name: "description", content: "Your saved listings and kiosks on bluekiosk." },
     ],
   }),
   component: FavoritesPage,
@@ -20,38 +22,42 @@ export const Route = createFileRoute("/favorites")({
 function FavoritesPage() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const [tab, setTab] = useState<"listings" | "kiosks">("listings");
   const [listings, setListings] = useState<any[]>([]);
+  const [kiosks, setKiosks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (authLoading) return;
-    if (!isAuthenticated) { navigate({ to: "/login" }); return; }
+    if (!isAuthenticated) { navigate({ to: "/login", search: { redirect: "/favorites" } }); return; }
     fetchFavorites();
   }, [authLoading, isAuthenticated]);
 
   const fetchFavorites = async () => {
     if (!user) return;
-    const { data } = await supabase
-      .from("favorites")
-      .select("listing_id, listings(id, title, slug, price, currency, condition, is_negotiable, region, city, created_at, listing_images(image_url))")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
-
-    setListings((data || []).map((f: any) => f.listings).filter(Boolean));
+    setLoading(true);
+    const [lRes, kRes] = await Promise.all([
+      supabase
+        .from("favorites")
+        .select("listing_id, listings(id, title, slug, price, currency, condition, is_negotiable, region, city, created_at, listing_images(image_url), kiosks(name, slug, phone, is_verified))")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("kiosk_favorites")
+        .select("kiosk_id, kiosks(id, name, slug, description, region, city, is_verified, cover_image_url, categories(name, icon_name), listings(count))")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false }),
+    ]);
+    setListings(((lRes.data || []) as any[]).map((f) => f.listings).filter(Boolean));
+    setKiosks(((kRes.data || []) as any[]).map((f) => f.kiosks).filter(Boolean));
     setLoading(false);
-  };
-
-  const removeFavorite = async (listingId: string) => {
-    if (!user) return;
-    await supabase.from("favorites").delete().eq("user_id", user.id).eq("listing_id", listingId);
-    setListings((prev) => prev.filter((l) => l.id !== listingId));
   };
 
   if (authLoading || loading) {
     return (
       <>
         <Navbar />
-        <div className="min-h-[60vh] flex items-center justify-center bg-bk-cream">
+        <div className="min-h-[60vh] flex items-center justify-center bg-bk-page">
           <Loader2 className="w-8 h-8 animate-spin text-bk-muted" />
         </div>
       </>
@@ -61,56 +67,51 @@ function FavoritesPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-bk-cream py-10">
-        <div className="mx-auto max-w-[1280px] px-6">
-          <h1 className="text-[36px] font-bold text-bk-dark mb-2">Saved Listings</h1>
-          <p className="text-[16px] text-bk-muted mb-8">Items you've saved for later</p>
+      <main className="min-h-screen bg-bk-page py-8">
+        <div className="mx-auto max-w-[1280px] px-4 md:px-6">
+          <h1 className="text-[28px] md:text-[32px] font-bold text-bk-dark mb-1">Saved</h1>
+          <p className="text-[14px] text-bk-muted mb-6">Items and vendors you've saved for later.</p>
 
-          {listings.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-bk-beige p-12 text-center">
-              <Heart className="w-12 h-12 text-bk-muted mx-auto mb-4" />
-              <p className="text-[18px] text-bk-dark font-semibold mb-2">No saved listings yet</p>
-              <p className="text-[15px] text-bk-muted mb-6">Browse listings and tap the heart icon to save them here.</p>
-              <Link to="/discover" className="inline-block text-[14px] font-semibold bg-bk-yellow text-bk-dark px-6 py-3 rounded-full hover:bg-bk-yellow-hover transition">
-                Browse Listings
-              </Link>
-            </div>
+          <div className="flex gap-1 bg-white rounded-xl p-1 mb-6 w-fit border border-bk-beige">
+            {([
+              { id: "listings" as const, label: `Listings (${listings.length})`, icon: Tag },
+              { id: "kiosks" as const, label: `Kiosks (${kiosks.length})`, icon: Store },
+            ]).map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition inline-flex items-center gap-1.5 ${
+                  tab === t.id ? "bg-bk-dark text-white" : "text-bk-muted hover:text-bk-dark"
+                }`}
+              >
+                <t.icon className="w-3.5 h-3.5" /> {t.label}
+              </button>
+            ))}
+          </div>
+
+          {tab === "listings" ? (
+            listings.length === 0 ? (
+              <EmptyState
+                icon={Heart}
+                title="No saved listings yet"
+                description="Browse listings and tap the heart icon to save them here."
+                primaryCta={{ label: "Browse listings", to: "/discover" }}
+              />
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                {listings.map((l: any) => <ListingCard key={l.id} listing={l} />)}
+              </div>
+            )
+          ) : kiosks.length === 0 ? (
+            <EmptyState
+              icon={Store}
+              title="No saved kiosks yet"
+              description="When you find a vendor you like, tap the heart on their kiosk page to save it here."
+              primaryCta={{ label: "Browse kiosks", to: "/discover" }}
+            />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {listings.map((listing: any) => (
-                <div key={listing.id} className="bg-white rounded-2xl overflow-hidden border border-bk-beige group relative">
-                  <button
-                    onClick={() => removeFavorite(listing.id)}
-                    className="absolute top-3 right-3 z-10 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow-sm"
-                    title="Remove from saved"
-                  >
-                    <Heart className="w-4 h-4 fill-red-500 text-red-500" />
-                  </button>
-                  <Link to="/listing/$slug" params={{ slug: listing.slug }} className="block">
-                    <div className="aspect-square bg-bk-beige overflow-hidden">
-                      {listing.listing_images?.[0]?.image_url ? (
-                        <img src={listing.listing_images[0].image_url} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center"><Tag className="w-12 h-12 text-bk-muted opacity-30" /></div>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <h3 className="text-[15px] font-semibold text-bk-dark truncate mb-1">{listing.title}</h3>
-                      <p className="text-[16px] font-bold text-bk-dark mb-2">{formatPrice(Number(listing.price), listing.currency)}</p>
-                      <div className="flex items-center gap-2 text-[12px] text-bk-muted">
-                        <span className="bg-bk-cream px-2 py-0.5 rounded-full">{CONDITION_LABELS[listing.condition]}</span>
-                        {listing.is_negotiable && <span className="bg-bk-teal px-2 py-0.5 rounded-full">Negotiable</span>}
-                      </div>
-                      <div className="flex items-center gap-2 mt-2 text-[12px] text-bk-muted">
-                        {listing.region && (
-                          <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{listing.city ? `${listing.city}, ` : ""}{listing.region}</span>
-                        )}
-                        <span>{timeAgo(listing.created_at)}</span>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {kiosks.map((k: any) => <KioskCard key={k.id} kiosk={k} />)}
             </div>
           )}
         </div>
@@ -119,3 +120,6 @@ function FavoritesPage() {
     </>
   );
 }
+
+// silence unused if path used: _ = Link
+const _ = Link;
