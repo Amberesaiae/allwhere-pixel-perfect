@@ -1,11 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Search, Plus, Heart, User } from "lucide-react";
+import { Home, Search, Plus, MessageSquare, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
 export default function MobileBottomNav() {
   const { isAuthenticated, user } = useAuth();
   const { isVendor } = useUserRoles(user?.id);
+  const unread = useUnreadMessages(user?.id);
 
   const sellTo = !isAuthenticated ? "/register" : isVendor ? "/dashboard/create-listing" : "/become-vendor";
 
@@ -26,9 +28,14 @@ export default function MobileBottomNav() {
       >
         <Plus className="w-6 h-6" />
       </Link>
-      <Link to={isAuthenticated ? "/favorites" : "/login"} className="flex flex-col items-center gap-0.5 text-bk-muted" activeProps={{ className: "text-bk-dark" }}>
-        <Heart className="w-5 h-5" />
-        <span className="text-[10px] font-medium">Saved</span>
+      <Link to={isAuthenticated ? "/chat" : "/login"} className="relative flex flex-col items-center gap-0.5 text-bk-muted" activeProps={{ className: "text-bk-dark" }}>
+        <MessageSquare className="w-5 h-5" />
+        {unread > 0 && (
+          <span className="absolute -top-1 right-2 bg-bk-yellow text-bk-dark text-[9px] font-bold rounded-full min-w-[14px] h-[14px] px-1 flex items-center justify-center">
+            {unread > 9 ? "9+" : unread}
+          </span>
+        )}
+        <span className="text-[10px] font-medium">Chat</span>
       </Link>
       <Link to={isAuthenticated ? "/profile" : "/login"} className="flex flex-col items-center gap-0.5 text-bk-muted" activeProps={{ className: "text-bk-dark" }}>
         <User className="w-5 h-5" />
