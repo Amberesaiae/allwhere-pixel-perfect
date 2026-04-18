@@ -8,7 +8,7 @@ import BrandLogo from "@/components/BrandLogo";
 
 export default function Navbar() {
   const { isAuthenticated, user, isLoading } = useAuth();
-  const { isVendor, loading: rolesLoading } = useUserRoles(user?.id);
+  const { isVendor, isAdmin, loading: rolesLoading } = useUserRoles(user?.id);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
