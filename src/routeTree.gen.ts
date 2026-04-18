@@ -19,6 +19,7 @@ import { Route as HelpRouteImport } from './routes/help'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as ChatRouteImport } from './routes/chat'
 import { Route as BecomeVendorRouteImport } from './routes/become-vendor'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -28,6 +29,7 @@ import { Route as ListingSlugRouteImport } from './routes/listing.$slug'
 import { Route as KioskSlugRouteImport } from './routes/kiosk.$slug'
 import { Route as DashboardCreateListingRouteImport } from './routes/dashboard.create-listing'
 import { Route as DashboardCreateKioskRouteImport } from './routes/dashboard.create-kiosk'
+import { Route as ChatConversationIdRouteImport } from './routes/chat.$conversationId'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as DashboardEditListingIdRouteImport } from './routes/dashboard.edit-listing.$id'
 import { Route as DashboardEditKioskIdRouteImport } from './routes/dashboard.edit-kiosk.$id'
@@ -82,6 +84,11 @@ const DiscoverRoute = DiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BecomeVendorRoute = BecomeVendorRouteImport.update({
   id: '/become-vendor',
   path: '/become-vendor',
@@ -127,6 +134,11 @@ const DashboardCreateKioskRoute = DashboardCreateKioskRouteImport.update({
   path: '/dashboard/create-kiosk',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChatConversationIdRoute = ChatConversationIdRouteImport.update({
+  id: '/$conversationId',
+  path: '/$conversationId',
+  getParentRoute: () => ChatRoute,
+} as any)
 const AdminReportsRoute = AdminReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -147,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/become-vendor': typeof BecomeVendorRoute
+  '/chat': typeof ChatRouteWithChildren
   '/discover': typeof DiscoverRoute
   '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -158,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/safety': typeof SafetyRoute
   '/terms': typeof TermsRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
   '/kiosk/$slug': typeof KioskSlugRoute
@@ -171,6 +185,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/become-vendor': typeof BecomeVendorRoute
+  '/chat': typeof ChatRouteWithChildren
   '/discover': typeof DiscoverRoute
   '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -182,6 +197,7 @@ export interface FileRoutesByTo {
   '/safety': typeof SafetyRoute
   '/terms': typeof TermsRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
   '/kiosk/$slug': typeof KioskSlugRoute
@@ -196,6 +212,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/become-vendor': typeof BecomeVendorRoute
+  '/chat': typeof ChatRouteWithChildren
   '/discover': typeof DiscoverRoute
   '/favorites': typeof FavoritesRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -207,6 +224,7 @@ export interface FileRoutesById {
   '/safety': typeof SafetyRoute
   '/terms': typeof TermsRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
   '/kiosk/$slug': typeof KioskSlugRoute
@@ -222,6 +240,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/become-vendor'
+    | '/chat'
     | '/discover'
     | '/favorites'
     | '/forgot-password'
@@ -233,6 +252,7 @@ export interface FileRouteTypes {
     | '/safety'
     | '/terms'
     | '/admin/reports'
+    | '/chat/$conversationId'
     | '/dashboard/create-kiosk'
     | '/dashboard/create-listing'
     | '/kiosk/$slug'
@@ -246,6 +266,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/become-vendor'
+    | '/chat'
     | '/discover'
     | '/favorites'
     | '/forgot-password'
@@ -257,6 +278,7 @@ export interface FileRouteTypes {
     | '/safety'
     | '/terms'
     | '/admin/reports'
+    | '/chat/$conversationId'
     | '/dashboard/create-kiosk'
     | '/dashboard/create-listing'
     | '/kiosk/$slug'
@@ -270,6 +292,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/become-vendor'
+    | '/chat'
     | '/discover'
     | '/favorites'
     | '/forgot-password'
@@ -281,6 +304,7 @@ export interface FileRouteTypes {
     | '/safety'
     | '/terms'
     | '/admin/reports'
+    | '/chat/$conversationId'
     | '/dashboard/create-kiosk'
     | '/dashboard/create-listing'
     | '/kiosk/$slug'
@@ -295,6 +319,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   BecomeVendorRoute: typeof BecomeVendorRoute
+  ChatRoute: typeof ChatRouteWithChildren
   DiscoverRoute: typeof DiscoverRoute
   FavoritesRoute: typeof FavoritesRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
@@ -387,6 +412,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/become-vendor': {
       id: '/become-vendor'
       path: '/become-vendor'
@@ -450,6 +482,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCreateKioskRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chat/$conversationId': {
+      id: '/chat/$conversationId'
+      path: '/$conversationId'
+      fullPath: '/chat/$conversationId'
+      preLoaderRoute: typeof ChatConversationIdRouteImport
+      parentRoute: typeof ChatRoute
+    }
     '/admin/reports': {
       id: '/admin/reports'
       path: '/reports'
@@ -484,10 +523,21 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface ChatRouteChildren {
+  ChatConversationIdRoute: typeof ChatConversationIdRoute
+}
+
+const ChatRouteChildren: ChatRouteChildren = {
+  ChatConversationIdRoute: ChatConversationIdRoute,
+}
+
+const ChatRouteWithChildren = ChatRoute._addFileChildren(ChatRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   BecomeVendorRoute: BecomeVendorRoute,
+  ChatRoute: ChatRouteWithChildren,
   DiscoverRoute: DiscoverRoute,
   FavoritesRoute: FavoritesRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,

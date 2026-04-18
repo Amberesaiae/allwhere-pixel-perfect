@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
-import { Search, Heart, User, Menu, X, ChevronDown, Plus } from "lucide-react";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { Search, Heart, User, Menu, X, ChevronDown, Plus, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import CategoryStrip from "@/components/CategoryStrip";
 import BrandLogo from "@/components/BrandLogo";
@@ -51,9 +52,12 @@ export default function Navbar() {
           {/* Right cluster */}
           <div className="flex items-center gap-1 md:gap-2 ml-auto sm:ml-0">
             {!isLoading && isAuthenticated && (
-              <Link to="/favorites" className="hidden sm:flex w-10 h-10 rounded-full hover:bg-bk-page items-center justify-center text-bk-dark transition" title="Saved">
-                <Heart className="w-5 h-5" />
-              </Link>
+              <>
+                <ChatBell userId={user?.id} />
+                <Link to="/favorites" className="hidden sm:flex w-10 h-10 rounded-full hover:bg-bk-page items-center justify-center text-bk-dark transition" title="Saved">
+                  <Heart className="w-5 h-5" />
+                </Link>
+              </>
             )}
             {!isLoading && (
               isAuthenticated ? (
@@ -112,6 +116,7 @@ export default function Navbar() {
             <Link to="/discover" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Discover</Link>
             {isAuthenticated && (
               <>
+                <Link to="/chat" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Messages</Link>
                 <Link to="/favorites" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Saved</Link>
                 {isVendor && <Link to="/dashboard" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Dashboard</Link>}
                 {isAdmin && <Link to="/admin/reports" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Admin</Link>}
@@ -128,5 +133,19 @@ export default function Navbar() {
         </div>
       )}
     </header>
+  );
+}
+
+function ChatBell({ userId }: { userId: string | undefined }) {
+  const unread = useUnreadMessages(userId);
+  return (
+    <Link to="/chat" className="hidden sm:flex relative w-10 h-10 rounded-full hover:bg-bk-page items-center justify-center text-bk-dark transition" title="Messages">
+      <MessageSquare className="w-5 h-5" />
+      {unread > 0 && (
+        <span className="absolute top-1 right-1 bg-bk-yellow text-bk-dark text-[10px] font-bold rounded-full min-w-[16px] h-[16px] px-1 flex items-center justify-center">
+          {unread > 9 ? "9+" : unread}
+        </span>
+      )}
+    </Link>
   );
 }
