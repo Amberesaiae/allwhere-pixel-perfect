@@ -163,7 +163,7 @@ function ChatThread() {
     setUploading(true);
     try {
       const url = await uploadChatAttachment(conversationId, file);
-      await send({ attachment_url: url, message_type: file.type.startsWith("image/") ? "image" : "text", body: file.type.startsWith("image/") ? null : file.name });
+      await send({ attachment_url: url, message_type: file.type.startsWith("image/") ? "image" : "text", body: file.type.startsWith("image/") ? undefined : file.name });
     } catch (err: any) {
       toast.error(err?.message ?? "Upload failed.");
     } finally {
