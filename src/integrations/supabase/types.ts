@@ -369,6 +369,9 @@ export type Database = {
           id: string
           reason: string
           reporter_id: string | null
+          resolution_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           status: string
           target_id: string
           target_type: string
@@ -379,6 +382,9 @@ export type Database = {
           id?: string
           reason: string
           reporter_id?: string | null
+          resolution_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: string
           target_id: string
           target_type: string
@@ -389,6 +395,9 @@ export type Database = {
           id?: string
           reason?: string
           reporter_id?: string | null
+          resolution_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: string
           target_id?: string
           target_type?: string

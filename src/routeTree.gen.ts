@@ -20,6 +20,7 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as BecomeVendorRouteImport } from './routes/become-vendor'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as SellerIdRouteImport } from './routes/seller.$id'
@@ -27,6 +28,7 @@ import { Route as ListingSlugRouteImport } from './routes/listing.$slug'
 import { Route as KioskSlugRouteImport } from './routes/kiosk.$slug'
 import { Route as DashboardCreateListingRouteImport } from './routes/dashboard.create-listing'
 import { Route as DashboardCreateKioskRouteImport } from './routes/dashboard.create-kiosk'
+import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as DashboardEditListingIdRouteImport } from './routes/dashboard.edit-listing.$id'
 import { Route as DashboardEditKioskIdRouteImport } from './routes/dashboard.edit-kiosk.$id'
 
@@ -85,6 +87,11 @@ const BecomeVendorRoute = BecomeVendorRouteImport.update({
   path: '/become-vendor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -120,6 +127,11 @@ const DashboardCreateKioskRoute = DashboardCreateKioskRouteImport.update({
   path: '/dashboard/create-kiosk',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminReportsRoute = AdminReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AdminRoute,
+} as any)
 const DashboardEditListingIdRoute = DashboardEditListingIdRouteImport.update({
   id: '/dashboard/edit-listing/$id',
   path: '/dashboard/edit-listing/$id',
@@ -133,6 +145,7 @@ const DashboardEditKioskIdRoute = DashboardEditKioskIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/become-vendor': typeof BecomeVendorRoute
   '/discover': typeof DiscoverRoute
   '/favorites': typeof FavoritesRoute
@@ -144,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/safety': typeof SafetyRoute
   '/terms': typeof TermsRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
   '/kiosk/$slug': typeof KioskSlugRoute
@@ -155,6 +169,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/become-vendor': typeof BecomeVendorRoute
   '/discover': typeof DiscoverRoute
   '/favorites': typeof FavoritesRoute
@@ -166,6 +181,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/safety': typeof SafetyRoute
   '/terms': typeof TermsRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
   '/kiosk/$slug': typeof KioskSlugRoute
@@ -178,6 +194,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/become-vendor': typeof BecomeVendorRoute
   '/discover': typeof DiscoverRoute
   '/favorites': typeof FavoritesRoute
@@ -189,6 +206,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/safety': typeof SafetyRoute
   '/terms': typeof TermsRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
   '/kiosk/$slug': typeof KioskSlugRoute
@@ -202,6 +220,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/become-vendor'
     | '/discover'
     | '/favorites'
@@ -213,6 +232,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/safety'
     | '/terms'
+    | '/admin/reports'
     | '/dashboard/create-kiosk'
     | '/dashboard/create-listing'
     | '/kiosk/$slug'
@@ -224,6 +244,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/become-vendor'
     | '/discover'
     | '/favorites'
@@ -235,6 +256,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/safety'
     | '/terms'
+    | '/admin/reports'
     | '/dashboard/create-kiosk'
     | '/dashboard/create-listing'
     | '/kiosk/$slug'
@@ -246,6 +268,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/become-vendor'
     | '/discover'
     | '/favorites'
@@ -257,6 +280,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/safety'
     | '/terms'
+    | '/admin/reports'
     | '/dashboard/create-kiosk'
     | '/dashboard/create-listing'
     | '/kiosk/$slug'
@@ -269,6 +293,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   BecomeVendorRoute: typeof BecomeVendorRoute
   DiscoverRoute: typeof DiscoverRoute
   FavoritesRoute: typeof FavoritesRoute
@@ -369,6 +394,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BecomeVendorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -418,6 +450,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCreateKioskRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/reports': {
+      id: '/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/dashboard/edit-listing/$id': {
       id: '/dashboard/edit-listing/$id'
       path: '/dashboard/edit-listing/$id'
@@ -435,8 +474,19 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminReportsRoute: typeof AdminReportsRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminReportsRoute: AdminReportsRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   BecomeVendorRoute: BecomeVendorRoute,
   DiscoverRoute: DiscoverRoute,
   FavoritesRoute: FavoritesRoute,

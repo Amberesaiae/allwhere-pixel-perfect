@@ -8,7 +8,7 @@ import BrandLogo from "@/components/BrandLogo";
 
 export default function Navbar() {
   const { isAuthenticated, user, isLoading } = useAuth();
-  const { isVendor, loading: rolesLoading } = useUserRoles(user?.id);
+  const { isVendor, isAdmin, loading: rolesLoading } = useUserRoles(user?.id);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
@@ -114,6 +114,7 @@ export default function Navbar() {
               <>
                 <Link to="/favorites" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Saved</Link>
                 {isVendor && <Link to="/dashboard" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Dashboard</Link>}
+                {isAdmin && <Link to="/admin/reports" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Admin</Link>}
                 <Link to="/profile" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark">Profile</Link>
               </>
             )}
