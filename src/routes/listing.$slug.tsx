@@ -287,14 +287,33 @@ function ListingDetailPage() {
 
                 {/* Action row */}
                 <div className="space-y-2 mt-5">
-                  {phone ? (
-                    <a href={getWhatsAppUrl(phone, whatsappMsg)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full text-[14px] font-bold bg-bk-yellow text-bk-dark py-3.5 rounded-full hover:bg-bk-yellow-hover transition">
-                      <MessageCircle className="w-4 h-4" /> Contact via WhatsApp
+                  <button
+                    onClick={async () => {
+                      if (!user) { navigate({ to: "/login", search: { redirect: `/listing/${slug}` } }); return; }
+                      const ownerId = listing.kiosks?.owner_id;
+                      if (!ownerId) return;
+                      if (ownerId === user.id) { toast.error("You can't message your own listing."); return; }
+                      try {
+                        const { getOrCreateConversation } = await import("@/lib/chat");
+                        const id = await getOrCreateConversation({
+                          customerId: user.id,
+                          vendorId: ownerId,
+                          kioskId: listing.kiosk_id,
+                          listingId: listing.id,
+                        });
+                        navigate({ to: "/chat/$conversationId", params: { conversationId: id } });
+                      } catch (e: any) {
+                        toast.error(e?.message ?? "Could not open chat.");
+                      }
+                    }}
+                    className="flex items-center justify-center gap-2 w-full text-[14px] font-bold bg-bk-yellow text-bk-dark py-3.5 rounded-full hover:bg-bk-yellow-hover transition"
+                  >
+                    <MessageCircle className="w-4 h-4" /> Chat with seller
+                  </button>
+                  {phone && (
+                    <a href={getWhatsAppUrl(phone, whatsappMsg)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full text-[13px] font-semibold border border-bk-beige text-bk-dark py-3 rounded-full hover:bg-bk-page transition">
+                      <MessageCircle className="w-4 h-4" /> WhatsApp
                     </a>
-                  ) : (
-                    <Link to="/kiosk/$slug" params={{ slug: listing.kiosks?.slug || "" }} className="flex items-center justify-center gap-2 w-full text-[14px] font-bold bg-bk-yellow text-bk-dark py-3.5 rounded-full hover:bg-bk-yellow-hover transition">
-                      Visit Kiosk to Contact
-                    </Link>
                   )}
                   {phone && (
                     <a href={getCallUrl(phone)} className="flex items-center justify-center gap-2 w-full text-[14px] font-semibold border-2 border-bk-dark text-bk-dark py-3 rounded-full hover:bg-bk-page transition">
