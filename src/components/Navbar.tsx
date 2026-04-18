@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
-import { Search, Heart, User, Menu, X, ChevronDown, Plus } from "lucide-react";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { Search, Heart, User, Menu, X, ChevronDown, Plus, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import CategoryStrip from "@/components/CategoryStrip";
 import BrandLogo from "@/components/BrandLogo";
@@ -51,9 +52,12 @@ export default function Navbar() {
           {/* Right cluster */}
           <div className="flex items-center gap-1 md:gap-2 ml-auto sm:ml-0">
             {!isLoading && isAuthenticated && (
-              <Link to="/favorites" className="hidden sm:flex w-10 h-10 rounded-full hover:bg-bk-page items-center justify-center text-bk-dark transition" title="Saved">
-                <Heart className="w-5 h-5" />
-              </Link>
+              <>
+                <ChatBell userId={user?.id} />
+                <Link to="/favorites" className="hidden sm:flex w-10 h-10 rounded-full hover:bg-bk-page items-center justify-center text-bk-dark transition" title="Saved">
+                  <Heart className="w-5 h-5" />
+                </Link>
+              </>
             )}
             {!isLoading && (
               isAuthenticated ? (
