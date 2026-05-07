@@ -119,12 +119,17 @@ function DashboardPage() {
               </button>
             </div>
 
-            <Link
-              to={tab === "kiosks" ? "/dashboard/create-kiosk" : "/dashboard/create-listing"}
-              className="inline-flex items-center gap-2 text-[14px] font-semibold bg-bk-yellow text-bk-dark px-5 py-2.5 rounded-full hover:bg-bk-yellow-hover transition"
-            >
-              <Plus className="w-4 h-4" /> New {tab === "kiosks" ? "Kiosk" : "Listing"}
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link to="/dashboard/orders" className="inline-flex items-center gap-1.5 text-[13px] font-semibold border border-bk-beige text-bk-dark px-4 py-2.5 rounded-full hover:bg-bk-page transition">
+                <Package className="w-4 h-4" /> Orders
+              </Link>
+              <Link
+                to={tab === "kiosks" ? "/dashboard/create-kiosk" : "/dashboard/create-listing"}
+                className="inline-flex items-center gap-2 text-[14px] font-semibold bg-bk-yellow text-bk-dark px-5 py-2.5 rounded-full hover:bg-bk-yellow-hover transition"
+              >
+                <Plus className="w-4 h-4" /> New {tab === "kiosks" ? "Kiosk" : "Listing"}
+              </Link>
+            </div>
           </div>
 
           {tab === "kiosks" ? (

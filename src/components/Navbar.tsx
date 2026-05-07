@@ -118,7 +118,9 @@ export default function Navbar() {
               <>
                 <Link to="/chat" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Messages</Link>
                 <Link to="/favorites" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Saved</Link>
+                <Link to="/orders" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Orders</Link>
                 {isVendor && <Link to="/dashboard" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Dashboard</Link>}
+                {isVendor && <Link to="/dashboard/orders" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Vendor orders</Link>}
                 {isAdmin && <Link to="/admin/reports" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark border-b border-bk-beige/50">Admin</Link>}
                 <Link to="/profile" onClick={closeMobile} className="block py-2.5 text-[14px] font-medium text-bk-dark">Profile</Link>
               </>
