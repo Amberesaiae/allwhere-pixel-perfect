@@ -415,6 +415,90 @@ export type Database = {
           },
         ]
       }
+      orders: {
+        Row: {
+          auto_release_at: string | null
+          buyer_id: string
+          conversation_id: string | null
+          created_at: string
+          currency: string
+          delivered_at: string | null
+          delivery_address: string | null
+          delivery_city: string | null
+          delivery_name: string | null
+          delivery_phone: string | null
+          delivery_region: string | null
+          id: string
+          kiosk_id: string
+          listing_id: string
+          notes: string | null
+          paid_at: string | null
+          quantity: number
+          released_at: string | null
+          shipped_at: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          total_amount: number
+          tracking_note: string | null
+          unit_price: number
+          updated_at: string
+          vendor_id: string
+        }
+        Insert: {
+          auto_release_at?: string | null
+          buyer_id: string
+          conversation_id?: string | null
+          created_at?: string
+          currency?: string
+          delivered_at?: string | null
+          delivery_address?: string | null
+          delivery_city?: string | null
+          delivery_name?: string | null
+          delivery_phone?: string | null
+          delivery_region?: string | null
+          id?: string
+          kiosk_id: string
+          listing_id: string
+          notes?: string | null
+          paid_at?: string | null
+          quantity?: number
+          released_at?: string | null
+          shipped_at?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          total_amount: number
+          tracking_note?: string | null
+          unit_price: number
+          updated_at?: string
+          vendor_id: string
+        }
+        Update: {
+          auto_release_at?: string | null
+          buyer_id?: string
+          conversation_id?: string | null
+          created_at?: string
+          currency?: string
+          delivered_at?: string | null
+          delivery_address?: string | null
+          delivery_city?: string | null
+          delivery_name?: string | null
+          delivery_phone?: string | null
+          delivery_region?: string | null
+          id?: string
+          kiosk_id?: string
+          listing_id?: string
+          notes?: string | null
+          paid_at?: string | null
+          quantity?: number
+          released_at?: string | null
+          shipped_at?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          total_amount?: number
+          tracking_note?: string | null
+          unit_price?: number
+          updated_at?: string
+          vendor_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -493,6 +577,56 @@ export type Database = {
         }
         Relationships: []
       }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          currency: string
+          id: string
+          note: string | null
+          order_id: string
+          provider: string
+          provider_ref: string | null
+          status: string
+          type: Database["public"]["Enums"]["transaction_type"]
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          note?: string | null
+          order_id: string
+          provider?: string
+          provider_ref?: string | null
+          status?: string
+          type: Database["public"]["Enums"]["transaction_type"]
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          note?: string | null
+          order_id?: string
+          provider?: string
+          provider_ref?: string | null
+          status?: string
+          type?: Database["public"]["Enums"]["transaction_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -537,6 +671,16 @@ export type Database = {
     Enums: {
       app_role: "customer" | "vendor" | "admin"
       listing_condition: "new" | "used" | "refurbished"
+      order_status:
+        | "pending_payment"
+        | "paid_held"
+        | "shipped"
+        | "delivered"
+        | "released"
+        | "refunded"
+        | "disputed"
+        | "cancelled"
+      transaction_type: "payment" | "release" | "refund"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -666,6 +810,17 @@ export const Constants = {
     Enums: {
       app_role: ["customer", "vendor", "admin"],
       listing_condition: ["new", "used", "refurbished"],
+      order_status: [
+        "pending_payment",
+        "paid_held",
+        "shipped",
+        "delivered",
+        "released",
+        "refunded",
+        "disputed",
+        "cancelled",
+      ],
+      transaction_type: ["payment", "release", "refund"],
     },
   },
 } as const
