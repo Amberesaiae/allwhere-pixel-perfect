@@ -14,6 +14,7 @@ import { Route as SafetyRouteImport } from './routes/safety'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
@@ -25,14 +26,18 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as SellerIdRouteImport } from './routes/seller.$id'
+import { Route as OrdersOrderIdRouteImport } from './routes/orders.$orderId'
 import { Route as ListingSlugRouteImport } from './routes/listing.$slug'
 import { Route as KioskSlugRouteImport } from './routes/kiosk.$slug'
+import { Route as DashboardOrdersRouteImport } from './routes/dashboard.orders'
 import { Route as DashboardCreateListingRouteImport } from './routes/dashboard.create-listing'
 import { Route as DashboardCreateKioskRouteImport } from './routes/dashboard.create-kiosk'
+import { Route as CheckoutListingIdRouteImport } from './routes/checkout.$listingId'
 import { Route as ChatConversationIdRouteImport } from './routes/chat.$conversationId'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as DashboardEditListingIdRouteImport } from './routes/dashboard.edit-listing.$id'
 import { Route as DashboardEditKioskIdRouteImport } from './routes/dashboard.edit-kiosk.$id'
+import { Route as ApiPublicEscrowAutoReleaseRouteImport } from './routes/api/public/escrow-auto-release'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -57,6 +62,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersRoute = OrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -114,6 +124,11 @@ const SellerIdRoute = SellerIdRouteImport.update({
   path: '/seller/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrdersOrderIdRoute = OrdersOrderIdRouteImport.update({
+  id: '/$orderId',
+  path: '/$orderId',
+  getParentRoute: () => OrdersRoute,
+} as any)
 const ListingSlugRoute = ListingSlugRouteImport.update({
   id: '/listing/$slug',
   path: '/listing/$slug',
@@ -124,6 +139,11 @@ const KioskSlugRoute = KioskSlugRouteImport.update({
   path: '/kiosk/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardOrdersRoute = DashboardOrdersRouteImport.update({
+  id: '/dashboard/orders',
+  path: '/dashboard/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardCreateListingRoute = DashboardCreateListingRouteImport.update({
   id: '/dashboard/create-listing',
   path: '/dashboard/create-listing',
@@ -132,6 +152,11 @@ const DashboardCreateListingRoute = DashboardCreateListingRouteImport.update({
 const DashboardCreateKioskRoute = DashboardCreateKioskRouteImport.update({
   id: '/dashboard/create-kiosk',
   path: '/dashboard/create-kiosk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutListingIdRoute = CheckoutListingIdRouteImport.update({
+  id: '/checkout/$listingId',
+  path: '/checkout/$listingId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatConversationIdRoute = ChatConversationIdRouteImport.update({
@@ -154,6 +179,12 @@ const DashboardEditKioskIdRoute = DashboardEditKioskIdRouteImport.update({
   path: '/dashboard/edit-kiosk/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicEscrowAutoReleaseRoute =
+  ApiPublicEscrowAutoReleaseRouteImport.update({
+    id: '/api/public/escrow-auto-release',
+    path: '/api/public/escrow-auto-release',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -165,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
   '/login': typeof LoginRoute
+  '/orders': typeof OrdersRouteWithChildren
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -172,12 +204,16 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/chat/$conversationId': typeof ChatConversationIdRoute
+  '/checkout/$listingId': typeof CheckoutListingIdRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
+  '/dashboard/orders': typeof DashboardOrdersRoute
   '/kiosk/$slug': typeof KioskSlugRoute
   '/listing/$slug': typeof ListingSlugRoute
+  '/orders/$orderId': typeof OrdersOrderIdRoute
   '/seller/$id': typeof SellerIdRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/escrow-auto-release': typeof ApiPublicEscrowAutoReleaseRoute
   '/dashboard/edit-kiosk/$id': typeof DashboardEditKioskIdRoute
   '/dashboard/edit-listing/$id': typeof DashboardEditListingIdRoute
 }
@@ -191,6 +227,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
   '/login': typeof LoginRoute
+  '/orders': typeof OrdersRouteWithChildren
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -198,12 +235,16 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/chat/$conversationId': typeof ChatConversationIdRoute
+  '/checkout/$listingId': typeof CheckoutListingIdRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
+  '/dashboard/orders': typeof DashboardOrdersRoute
   '/kiosk/$slug': typeof KioskSlugRoute
   '/listing/$slug': typeof ListingSlugRoute
+  '/orders/$orderId': typeof OrdersOrderIdRoute
   '/seller/$id': typeof SellerIdRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/api/public/escrow-auto-release': typeof ApiPublicEscrowAutoReleaseRoute
   '/dashboard/edit-kiosk/$id': typeof DashboardEditKioskIdRoute
   '/dashboard/edit-listing/$id': typeof DashboardEditListingIdRoute
 }
@@ -218,6 +259,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/help': typeof HelpRoute
   '/login': typeof LoginRoute
+  '/orders': typeof OrdersRouteWithChildren
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -225,12 +267,16 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/chat/$conversationId': typeof ChatConversationIdRoute
+  '/checkout/$listingId': typeof CheckoutListingIdRoute
   '/dashboard/create-kiosk': typeof DashboardCreateKioskRoute
   '/dashboard/create-listing': typeof DashboardCreateListingRoute
+  '/dashboard/orders': typeof DashboardOrdersRoute
   '/kiosk/$slug': typeof KioskSlugRoute
   '/listing/$slug': typeof ListingSlugRoute
+  '/orders/$orderId': typeof OrdersOrderIdRoute
   '/seller/$id': typeof SellerIdRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/escrow-auto-release': typeof ApiPublicEscrowAutoReleaseRoute
   '/dashboard/edit-kiosk/$id': typeof DashboardEditKioskIdRoute
   '/dashboard/edit-listing/$id': typeof DashboardEditListingIdRoute
 }
@@ -246,6 +292,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/help'
     | '/login'
+    | '/orders'
     | '/profile'
     | '/register'
     | '/reset-password'
@@ -253,12 +300,16 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin/reports'
     | '/chat/$conversationId'
+    | '/checkout/$listingId'
     | '/dashboard/create-kiosk'
     | '/dashboard/create-listing'
+    | '/dashboard/orders'
     | '/kiosk/$slug'
     | '/listing/$slug'
+    | '/orders/$orderId'
     | '/seller/$id'
     | '/dashboard/'
+    | '/api/public/escrow-auto-release'
     | '/dashboard/edit-kiosk/$id'
     | '/dashboard/edit-listing/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -272,6 +323,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/help'
     | '/login'
+    | '/orders'
     | '/profile'
     | '/register'
     | '/reset-password'
@@ -279,12 +331,16 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin/reports'
     | '/chat/$conversationId'
+    | '/checkout/$listingId'
     | '/dashboard/create-kiosk'
     | '/dashboard/create-listing'
+    | '/dashboard/orders'
     | '/kiosk/$slug'
     | '/listing/$slug'
+    | '/orders/$orderId'
     | '/seller/$id'
     | '/dashboard'
+    | '/api/public/escrow-auto-release'
     | '/dashboard/edit-kiosk/$id'
     | '/dashboard/edit-listing/$id'
   id:
@@ -298,6 +354,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/help'
     | '/login'
+    | '/orders'
     | '/profile'
     | '/register'
     | '/reset-password'
@@ -305,12 +362,16 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin/reports'
     | '/chat/$conversationId'
+    | '/checkout/$listingId'
     | '/dashboard/create-kiosk'
     | '/dashboard/create-listing'
+    | '/dashboard/orders'
     | '/kiosk/$slug'
     | '/listing/$slug'
+    | '/orders/$orderId'
     | '/seller/$id'
     | '/dashboard/'
+    | '/api/public/escrow-auto-release'
     | '/dashboard/edit-kiosk/$id'
     | '/dashboard/edit-listing/$id'
   fileRoutesById: FileRoutesById
@@ -325,17 +386,21 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   HelpRoute: typeof HelpRoute
   LoginRoute: typeof LoginRoute
+  OrdersRoute: typeof OrdersRouteWithChildren
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SafetyRoute: typeof SafetyRoute
   TermsRoute: typeof TermsRoute
+  CheckoutListingIdRoute: typeof CheckoutListingIdRoute
   DashboardCreateKioskRoute: typeof DashboardCreateKioskRoute
   DashboardCreateListingRoute: typeof DashboardCreateListingRoute
+  DashboardOrdersRoute: typeof DashboardOrdersRoute
   KioskSlugRoute: typeof KioskSlugRoute
   ListingSlugRoute: typeof ListingSlugRoute
   SellerIdRoute: typeof SellerIdRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  ApiPublicEscrowAutoReleaseRoute: typeof ApiPublicEscrowAutoReleaseRoute
   DashboardEditKioskIdRoute: typeof DashboardEditKioskIdRoute
   DashboardEditListingIdRoute: typeof DashboardEditListingIdRoute
 }
@@ -375,6 +440,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders': {
+      id: '/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof OrdersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -454,6 +526,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SellerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/orders/$orderId': {
+      id: '/orders/$orderId'
+      path: '/$orderId'
+      fullPath: '/orders/$orderId'
+      preLoaderRoute: typeof OrdersOrderIdRouteImport
+      parentRoute: typeof OrdersRoute
+    }
     '/listing/$slug': {
       id: '/listing/$slug'
       path: '/listing/$slug'
@@ -468,6 +547,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KioskSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/orders': {
+      id: '/dashboard/orders'
+      path: '/dashboard/orders'
+      fullPath: '/dashboard/orders'
+      preLoaderRoute: typeof DashboardOrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/create-listing': {
       id: '/dashboard/create-listing'
       path: '/dashboard/create-listing'
@@ -480,6 +566,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard/create-kiosk'
       fullPath: '/dashboard/create-kiosk'
       preLoaderRoute: typeof DashboardCreateKioskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/$listingId': {
+      id: '/checkout/$listingId'
+      path: '/checkout/$listingId'
+      fullPath: '/checkout/$listingId'
+      preLoaderRoute: typeof CheckoutListingIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chat/$conversationId': {
@@ -510,6 +603,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardEditKioskIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/escrow-auto-release': {
+      id: '/api/public/escrow-auto-release'
+      path: '/api/public/escrow-auto-release'
+      fullPath: '/api/public/escrow-auto-release'
+      preLoaderRoute: typeof ApiPublicEscrowAutoReleaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -533,6 +633,17 @@ const ChatRouteChildren: ChatRouteChildren = {
 
 const ChatRouteWithChildren = ChatRoute._addFileChildren(ChatRouteChildren)
 
+interface OrdersRouteChildren {
+  OrdersOrderIdRoute: typeof OrdersOrderIdRoute
+}
+
+const OrdersRouteChildren: OrdersRouteChildren = {
+  OrdersOrderIdRoute: OrdersOrderIdRoute,
+}
+
+const OrdersRouteWithChildren =
+  OrdersRoute._addFileChildren(OrdersRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
@@ -543,17 +654,21 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   HelpRoute: HelpRoute,
   LoginRoute: LoginRoute,
+  OrdersRoute: OrdersRouteWithChildren,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SafetyRoute: SafetyRoute,
   TermsRoute: TermsRoute,
+  CheckoutListingIdRoute: CheckoutListingIdRoute,
   DashboardCreateKioskRoute: DashboardCreateKioskRoute,
   DashboardCreateListingRoute: DashboardCreateListingRoute,
+  DashboardOrdersRoute: DashboardOrdersRoute,
   KioskSlugRoute: KioskSlugRoute,
   ListingSlugRoute: ListingSlugRoute,
   SellerIdRoute: SellerIdRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  ApiPublicEscrowAutoReleaseRoute: ApiPublicEscrowAutoReleaseRoute,
   DashboardEditKioskIdRoute: DashboardEditKioskIdRoute,
   DashboardEditListingIdRoute: DashboardEditListingIdRoute,
 }

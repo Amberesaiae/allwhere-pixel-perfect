@@ -287,6 +287,15 @@ function ListingDetailPage() {
 
                 {/* Action row */}
                 <div className="space-y-2 mt-5">
+                  {listing.kiosks?.owner_id !== user?.id && (
+                    <Link
+                      to="/checkout/$listingId"
+                      params={{ listingId: listing.id }}
+                      className="flex items-center justify-center gap-2 w-full text-[14px] font-bold bg-bk-dark text-white py-3.5 rounded-full hover:opacity-90 transition"
+                    >
+                      <ShieldCheck className="w-4 h-4" /> Buy with BluPay
+                    </Link>
+                  )}
                   <button
                     onClick={async () => {
                       if (!user) { navigate({ to: "/login", search: { redirect: `/listing/${slug}` } }); return; }
