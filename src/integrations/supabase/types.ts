@@ -428,6 +428,11 @@ export type Database = {
           delivery_name: string | null
           delivery_phone: string | null
           delivery_region: string | null
+          dispute_opened_at: string | null
+          dispute_reason: string | null
+          dispute_resolution: string | null
+          dispute_resolved_at: string | null
+          dispute_resolved_by: string | null
           id: string
           kiosk_id: string
           listing_id: string
@@ -455,6 +460,11 @@ export type Database = {
           delivery_name?: string | null
           delivery_phone?: string | null
           delivery_region?: string | null
+          dispute_opened_at?: string | null
+          dispute_reason?: string | null
+          dispute_resolution?: string | null
+          dispute_resolved_at?: string | null
+          dispute_resolved_by?: string | null
           id?: string
           kiosk_id: string
           listing_id: string
@@ -482,6 +492,11 @@ export type Database = {
           delivery_name?: string | null
           delivery_phone?: string | null
           delivery_region?: string | null
+          dispute_opened_at?: string | null
+          dispute_reason?: string | null
+          dispute_resolution?: string | null
+          dispute_resolved_at?: string | null
+          dispute_resolved_by?: string | null
           id?: string
           kiosk_id?: string
           listing_id?: string
